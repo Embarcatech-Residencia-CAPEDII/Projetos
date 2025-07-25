@@ -1,18 +1,27 @@
 // Código para leitura de temperatura e umidade usando o sensor AHT10 com ESP32
 // Os dados são exibidos no monitor serial a cada 3 segundos
 
+// ===== INCLUDES E DEFINIÇÕES =====
 #include <Wire.h>
 #include "Adafruit_AHTX0.h"
 
+#define AHT10_SDA 4
+#define AHT10_SDL 5
+
+// ===== OBJETOS GLOBAIS =====
 Adafruit_AHTX0 aht;
 
-struct EnvironmentData {      //Estrutura para desacoplamento do sensor
-  float temperature;        
+
+// ===== STRUCTS =====
+struct EnvironmentData {  //Estrutura para desacoplamento do sensor
+  float temperature;
   float humidity;
   bool valid;
 };
 
-EnvironmentData readDataSensor() {
+
+// ===== FUNÇÕES UTILITÁRIAS =====
+EnvironmentData readSensorData() {
   sensors_event_t hum, temp;
   aht.getEvent(&hum, &temp);
 
@@ -29,36 +38,48 @@ EnvironmentData readDataSensor() {
   return data;
 }
 
+void printSensorData(const EnvironmentData& data) {
+
+  Serial.print("Temperatura: ");
+  Serial.print(data.temperature);
+  Serial.println(" °C");
+
+  Serial.print("Umidade: ");
+  Serial.print(data.humidity);
+  Serial.println(" %");
+}
+
+
+// ===== FUNÇÕES DE INICIALIZAÇÃO =====
+void initializeSensor() {
+
+  Wire.begin(AHT10_SDA, AHT10_SDL);
+  Serial.println("Iniciando sensor AHT10 ...");
+
+  if (!aht.begin()) {
+    Serial.println("Sensor AHT10 não inicializado");
+    while (1) delay(10);
+  }
+
+  Serial.println("Sensor AHT10 inicializado com sucesso!");
+}
+
+
+// ===== FUNÇÃO SETUP =====
 void setup() {
   Serial.begin(115200);
   while (!Serial) delay(10);
 
-  Wire.begin(21, 22);
-
-  Serial.println("Iniciando sensor AHT10 com Adafruit AHTX0...");
-
-  if (!aht.begin()) {
-    Serial.println("Não foi possível encontrar o AHT10! Verifique a fiação.");
-    while (1) delay(10);
-  }
-
-  Serial.println("Sensor AHT10 detectado com sucesso!");
+  initializeSensor();
 }
 
+
+// ===== FUNÇÃO LOOP PRINCIPAL =====
 void loop() {
 
-  EnvironmentData sensorReading = readDataSensor();
-
+  EnvironmentData sensorReading = readSensorData();
   if (sensorReading.valid) {
-    Serial.print("Temperatura: ");
-    Serial.print(sensorReading.temperature);
-    Serial.println(" °C");
-
-    Serial.print("Umidade: ");
-    Serial.print(sensorReading.humidity);
-    Serial.println(" %");
+    printSensorData(sensorReading);
   }
-
-
   delay(3000);
 }
