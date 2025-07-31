@@ -3,7 +3,11 @@
 
 // ===== INCLUDES E DEFINIÇÕES =====
 #include <Wire.h>
+#include <ESP8266WiFi.h>
 #include "Adafruit_AHTX0.h"
+
+#define SSID "XXXXXXX"
+#define PASSWORD "XXXXXXXX"
 
 #define AHT10_SDA 4
 #define AHT10_SDL 5
@@ -49,6 +53,33 @@ void printSensorData(const EnvironmentData& data) {
   Serial.println(" %");
 }
 
+bool conectWiFi() {
+
+  Serial.print("Conectando com Wi-Fi: ");
+  Serial.print(SSID);
+
+  WiFi.begin(SSID, PASSWORD);
+
+  unsigned long timeout = millis() + 10000;  // 10 seconds
+  while (WiFi.status() != WL_CONNECTED && millis() < timeout) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println(".");
+
+  if (WiFi.status() == WL_CONNECTED){
+    Serial.print("Conectado ao WiFi");
+    Serial.print("IP: ");
+    Serial.println(WiFi.localIP());
+    return true;
+  } else {
+    Serial.println("Conexão com WiFi não estabelecida");
+    return false;
+  }
+
+}
+
 
 // ===== FUNÇÕES DE INICIALIZAÇÃO =====
 void initializeSensor() {
@@ -71,15 +102,20 @@ void setup() {
   while (!Serial) delay(10);
 
   initializeSensor();
+
+  if(!conectWiFi()){
+
+    Serial.println("ERRO: Não foi possivel conectar ao wifi");
+  }
+  
 }
 
 
 // ===== FUNÇÃO LOOP PRINCIPAL =====
 void loop() {
-
   EnvironmentData sensorReading = readSensorData();
   if (sensorReading.valid) {
     printSensorData(sensorReading);
   }
-  delay(3000);
+  delay(1000);
 }
