@@ -29,6 +29,18 @@ source .venv/bin/activate   # Linux/MacOS
 ```bash
 pip install Flask
 pip install flask-mqtt
+pip install flask-pymongo
+pip install dotenv
+```
+### **4. No arquivo .env coloque as credenciais para conexão com seu Banco de dados 
+```
+MONGO_DB_HOST = ''
+MONGO_DB_PORT = ''
+MONGO_DB_USER = ''
+MONGO_DB_PASS = ''
+MONGO_DB_DATABASE = ''
+MONGO_DB_COLLECTION = ''
+DB_URI = ''
 ```
 
 ### **4. Abrir o Servidor 
@@ -36,10 +48,10 @@ pip install flask-mqtt
 cd ./chamada-de-enfermagem/server
 ```
 ```bash
-py server.py        #Windows
+py client_mqtt.py        #Windows
 ```
 ```bash
-python server.py    #Linux
+python client_mqtt.py    #Linux
 ```
 
 Acesse o servidor em: `http://127.0.0.1:5000`

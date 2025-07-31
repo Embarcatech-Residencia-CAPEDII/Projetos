@@ -1,5 +1,6 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_mqtt import Mqtt
+from mongo.MongoDBConnection import MongoDBConnection 
 
 app = Flask(__name__)
 
@@ -13,9 +14,16 @@ app.config['MQTT_USERNAME']         =       ''
 app.config['MQTT_PASSWORD']         =       ''
 app.config['MQTT_KEEPALIVE']        =       60
 app.config['MQTT_TLS_ENABLE']       =       False
-
 topic = 'teste/topico'                          #topico para teste
 
+'''
+Configuração para o Mongo DB
+'''
+mongoDBConnection = MongoDBConnection()
+
+'''
+Mqtt para uso dentro do client
+'''
 mqtt = Mqtt(app)
 
 '''
@@ -59,11 +67,12 @@ Conexão com o MongoDB
 
 
 '''
-Rotas/tópicos para cada microcontrolador
+Rota de teste com o Banco de Dados Mongo
 '''
 @app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+def data_mongo():
+    dados = mongoDBConnection.read_data()
+    return jsonify(dados)
 
 '''
 Rota/tópico para o microcontrolador do Posto de Enfermagem
