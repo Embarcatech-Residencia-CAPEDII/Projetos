@@ -4,7 +4,6 @@ import os
 from dotenv import load_dotenv
 from mongo.MongoDBConnection import MongoDBConnection
 
-
 load_dotenv()
 
 app = Flask(__name__)

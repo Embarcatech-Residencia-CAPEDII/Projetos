@@ -31,8 +31,9 @@ pip install Flask
 pip install flask-mqtt
 pip install flask-pymongo
 pip install dotenv
+pip install paho-mqtt
 ```
-### **4. No arquivo .env coloque as credenciais para conexão com seu Banco de dados 
+### **4. No arquivo .env coloque as credenciais para conexão com seu Banco de dados e do broker 
 ```
 MONGO_DB_HOST = ''
 MONGO_DB_PORT = ''
@@ -41,18 +42,29 @@ MONGO_DB_PASS = ''
 MONGO_DB_DATABASE = ''
 MONGO_DB_COLLECTION = ''
 DB_URI = ''
+
+BROKER_MQTT=''
+PORT_MQTT=''
+TOPIC=''
 ```
 
 ### **4. Abrir o Servidor 
 ```bash
-cd ./chamada-de-enfermagem/server
+cd ./chamada-de-enfermagem/server/Mqtt/
 ```
 ```bash
-py client_mqtt.py        #Windows
+py main.py        #Windows
 ```
 ```bash
-python client_mqtt.py    #Linux
+python main.py    #Linux
 ```
 
-Acesse o servidor em: `http://127.0.0.1:5000`
+### **5. Realizar um teste
+Em outro terminal execute o arquivo pub_test.py
+```bash
+py pub_test.py  #Linux
+```
+```bash
+python pub_test.py  #Linux
+```
 
