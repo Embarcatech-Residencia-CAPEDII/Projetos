@@ -16,7 +16,7 @@ static unsigned long lastConnectionAttemp = 0;
  * @brief Intervalo mínimo entre tentativas de reconexão (ms)
  * Evita reconectar muito rápido quando o Wi-Fi está instável.
  */
-static const unsigned long reconnectInterval = 10000; // 10 segundos
+static const unsigned long reconnectInterval = 2000; // 10 segundos
 
 // ------------------------------------------------------------
 // Implementação das funções públicas do módulo
