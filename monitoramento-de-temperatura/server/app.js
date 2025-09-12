@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import cors from 'cors';
 import './mqtt/mqttclient.js';
 import './database/db.js';
 import temperatureRoutes from './routes.js';
@@ -12,6 +13,13 @@ const swaggerDocument = JSON.parse(
 );
 
 const app = express();
+
+app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:port' //colocar seu ip e porta que esta rodando o frontend
+}));
+
+
 app.use(express.json());
 app.use('/api', temperatureRoutes);
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

@@ -21,14 +21,24 @@
         </div>
     </nav>
 
-    <div id="salaGrid"class="dashboard"> </div>
+    <div class="divider">
+            <div id="salaGrid" class="dashboard"> </div>
+
+             <div class="chart">
+                <canvas width="600" height="200" id="tempChart" class="chart-background"></canvas>
+                <canvas width="600" height="200" id="umidChart" class="chart-background"></canvas>
+            </div>
+    </div>
+    <div id="list"></div>
 
 
 
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.2.9/justgage.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="src/js/tempRoom.js"></script>
+    <script type="module" src="src/js/charts.js"></script>
 
 </body>
 
