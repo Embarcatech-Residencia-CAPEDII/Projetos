@@ -13,32 +13,30 @@
 
 
     <nav>
-        <a><img src="src/img/logo2.png"></a>
+        <a href="index.html"><img src="src/img/logo2.png"></a>
         <h1>Monitoramento de Temperatura</h1>
         <div class="icons">
             <a href="relatorio.html" title="Relatório"><i class="fa fa-file-excel-o"></i></a>
-            <a href="login.html" title="Sair"><i class="fa fa-sign-out"></i></a>
+            <a id="logoutBtn" title="Sair"><i class="fa fa-sign-out"></i></a>
         </div>
     </nav>
 
-    <div class="divider">
-            <div id="salaGrid" class="dashboard"> </div>
+    <div class="dashboard-user">
+            <div id="roomGrid" class="gauge"> 
+            </div>
 
              <div class="chart">
                 <canvas width="600" height="200" id="tempChart" class="chart-background"></canvas>
                 <canvas width="600" height="200" id="umidChart" class="chart-background"></canvas>
             </div>
     </div>
-    <div id="list"></div>
-
-
 
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.2.9/justgage.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module" src="src/js/tempRoom.js"></script>
-    <script type="module" src="src/js/charts.js"></script>
+    <script type="module" src="src/js/room.js"></script>
+    <script type="module" src="src/js/components/charts.js"></script>
 
 </body>
 

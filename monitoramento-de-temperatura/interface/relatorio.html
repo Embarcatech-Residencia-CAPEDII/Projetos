@@ -9,33 +9,24 @@
     <title>Monitoramento de Temperatura</title>
 </head>
 
-<body class="body-page">
-    <!-- <header>
-        <nav>
-            <a href=""><img src="src/img/logo1.png" alt=""></a>
-            <h1>Monitoramento de Temperatura</h1>
-            <a href="">Sair</a>
-        </nav>
-        
-    </header> -->
+<body class="default">
+
+    <nav>
+        <a href="index.html"><img src="src/img/logo2.png"></a>
+        <h1>Monitoramento de Temperatura</h1>
+        <div class="icons">
+            <a href="relatorio.html" title="Relatório"><i class="fa fa-file-excel-o"></i></a>
+            <a id="logoutBtn" title="Sair"><i class="fa fa-sign-out"></i></a>
+        </div>
+    </nav>
 
     <main>
-        <nav>
-            <a><img src="src/img/logo2.png"></a>
-            <h1>Monitoramento de Temperatura</h1>
-            <div class="icons">
-                <a href="index.html" title="Relatório"><i class="fa fa-file-excel-o"></i></a>
-                <a id="logoutBtn" title="Sair"><i class="fa fa-sign-out"></i></a>
-                <!-- <input type="date" class="interval"> -->
-            </div>
-        </nav>
-
-
         <div class="relatorio">
+            
             <div>
                 <h3>Emitir Relatório</h3>
             </div>
-            
+
             <div>
                 <label for="periodo">Escolha o período:</label>
                 <input id="start" class="date" type="date">
@@ -51,7 +42,7 @@
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.2.9/justgage.min.js"></script>
-    <script src="src/js/report.js"></script>
+    <script type="module" src="src/js/report.js"></script>
 
 </body>
 

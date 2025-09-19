@@ -16,7 +16,7 @@ const app = express();
 
 app.use(cors());
 app.use(cors({
-  origin: 'http://localhost:port' //colocar seu ip e porta que esta rodando o frontend
+  origin: 'http://127.0.0.1:5502' //colocar seu ip e porta que esta rodando o frontend
 }));
 
 

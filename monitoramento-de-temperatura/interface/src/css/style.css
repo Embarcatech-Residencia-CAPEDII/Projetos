@@ -7,17 +7,36 @@
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
+html,
+body {
+    height: 100%;
+}
+
 body {
     background-color: black;
 }
 
+.default {
+    background-color: white;
+}
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
 
 img {
     width: 280px;
     height: 100px;
 }
 
-i{
+i,
+a,
+button,
+.btn {
     cursor: pointer;
 }
 
@@ -30,10 +49,6 @@ a {
 
 p {
     color: rgb(148, 147, 147);
-}
-
-.body-page {
-    background-color: white;
 }
 
 .container {
@@ -81,7 +96,28 @@ button {
     padding: 6px;
 }
 
-.divider {
+.btn {
+    background-color: brown;
+    color: white;
+    font-size: 18px;
+    width: auto;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    font-size: 18px;
+    width: auto;
+}
+
+.btn-warning {
+    background-color:#fce040;
+    color: #000000;
+    font-size: 18px;
+    width: auto;
+}
+
+.dashboard-user {
     display: flex;
     gap: 20px;
     flex-direction: row;
@@ -91,29 +127,12 @@ button {
 
 }
 
-.btn {
-    background-color: brown;
-    color: white;
-    cursor: pointer;
-    font-size: 18px;
-    width: auto;
-}
-
-.dashboard {
+.gauge {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     gap: 20px;
-}
-
-.monitor {
-    width: inherit;
-    gap: 20px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
 }
 
 .chart {
@@ -129,35 +148,10 @@ button {
 
 .chart-background {
     background-color: rgba(68, 67, 67, 0.6);
-    /* cor do fundo */
     border-radius: 8px;
-    /* opcional: cantos arredondados */
 }
 
-.temp {
-    /* background-color: rgb(68, 67, 67);
-    border-radius: 10px; */
-    background-color: rgba(68, 67, 67, .6);
-    align-items: center;
-    justify-items: center;
-    cursor: pointer;
-    padding: 20px;
-    height: 100%;
-}
-
-
-.umid {
-    /* background-color: rgb(68, 67, 67);
-    border-radius: 10px; */
-    background-color: rgba(68, 67, 67, .6);
-    align-items: center;
-    justify-items: center;
-    cursor: pointer;
-    padding: 20px;
-    height: 100%;
-}
-
-.dashboard-grid {
+.room-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     margin: 100px 100px 10px 100px;
@@ -167,7 +161,7 @@ button {
     border-radius: 8px;
 }
 
-.temp-sala {
+.room-card {
     background-color: rgba(68, 67, 67, .6);
     border-radius: 3px;
     color: white;
@@ -179,16 +173,151 @@ button {
     transition: transform 0.2 ease, box-shadow 0.2s ease;
 }
 
-.temp-sala:hover {
+.room-card:hover {
     transform: scale(1.02);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.room {
+.temp {
+    background-color: rgba(68, 67, 67, .6);
+    align-items: center;
+    justify-items: center;
+    cursor: pointer;
+    padding: 20px;
+    height: 100%;
+}
+
+
+.umid {
+    background-color: rgba(68, 67, 67, .6);
+    align-items: center;
+    justify-items: center;
+    cursor: pointer;
+    padding: 20px;
+    height: 100%;
+}
+
+.dashboard-admin {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 5rem);
+    width: 100%;
+}
+
+.menu-lateral {
     display: flex;
     flex-direction: column;
+    justify-content: start;
     align-items: center;
-    color: white;
+    padding-top: 40px;
+    width: 17%;
+    height: 100%;
+    gap: 30px;
+    background-color: rgb(255, 255, 255);
+    border-right: 1px solid rgb(219, 218, 218);
+}
+
+.menu-lateral a {
+    display: flex;
+    align-items: center;
+    color: #495057;
+    text-align: center;
+    /* padding-top: 40px; */
+    padding-left: 40px;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+.menu-lateral a:hover {
+    background-color: #e6e6e6;
+}
+
+.menu-lateral .btn {
+    width: 300px;
+}
+
+hr {
+    border: none;
+    height: 2px;
+    background-color: #e6e6e6;
+    width: 80%;
+    margin: 0;
+}
+
+/* .fa{
+    border: none;
+} */
+
+.menu-principal {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    width: 83%;
+    height: 100%;
+    gap: 20px;
+    background-color: rgb(255, 255, 255);
+}
+
+table{
+    text-align: center;
+}
+
+table tr:nth-child(even) {
+  background-color: #e2e1e1;
+}
+
+caption {
+    font-size: 1.5em;
+    margin-bottom: 2em;
+}
+
+.admin-content {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-evenly;
+    width: 80%;
+    margin: 5rem 4rem;
+    gap: 20px;
+}
+
+dialog::backdrop{
+    background-color: rgba(0,0,0,0.3);
+}
+
+dialog{
+    margin: auto;
+    padding: 20px;
+    width: 500px;
+    max-width: 90vw;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);;
+}
+
+dialog form {
+    display: flex;
+    justify-content: center;
+    align-items:left;
+    padding: 20px;
+    gap: 15px;
+    width: 100%;
+}
+
+dialog form input{
+    border: 1px solid rgba(128, 128, 128, .5);
+    border-radius: 8px;
+    max-width: 80vw;
+}
+
+dialog h3{
+    color: #000000;
+    text-align: center;
 }
 
 .relatorio {
@@ -204,6 +333,25 @@ button {
     border-radius: 8px;
 }
 
+
+#response, #deleteMessage{
+  color: red;
+  font-weight: bold;
+  margin-top: 5px;
+  opacity: 1;
+  transition: opacity 1s ease; 
+}
+
+.fade-out {
+  opacity: 0; 
+}
+/* .alert{
+    color: red;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 5px;
+} */
+
 .relatorio label,
 .relatorio input,
 .relatorio button {
@@ -216,7 +364,6 @@ button {
     color: white;
     border: none;
     border-radius: 5px;
-    cursor: pointer;
     width: 200px;
     font-size: 18px;
 }
@@ -224,7 +371,7 @@ button {
 
 /*  BREAKPOINTS */
 @media (max-width: 767px) {
-    .dashbord {
+    .gauge {
         margin-top: 3rem;
         gap: 2rem;
     }
@@ -240,7 +387,7 @@ button {
         padding: 5px;
     }
 
-    .dashboard-grid {
+    .room-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         margin: 100px 100px 10px 100px;

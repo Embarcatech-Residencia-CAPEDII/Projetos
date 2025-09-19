@@ -1,6 +1,6 @@
 
 import { buscarTemperaturas } from './api.js';
-import { createGauge } from './gauge.js';
+import { createGauge } from './components/gauge.js';
 
 
 //carrega dados de temperatura de todas as salas cadastradas no sistema.
@@ -34,13 +34,15 @@ async function carregarTemperaturas() {
 
     sortRoom(salas);
 
+
+
     // Renderiza grid
-    const grid = document.getElementById("salasGrid");
+    const grid = document.getElementById("roomsGrid");
     grid.innerHTML = "";
 
     salas.forEach(sala => {
       const card = document.createElement("div");
-      card.className = "temp-sala";
+      card.className = "room-card";
       card.onclick = () => abrirSala(sala.room._id);
 
       // ids únicos para cada gauge
@@ -55,6 +57,10 @@ async function carregarTemperaturas() {
   `;
 
       grid.appendChild(card);
+
+      const body = document.body;
+      body.classList.remove('hide');
+      body.classList.add('show');
 
       // cria o gauge de temperatura
       createGauge(tempGaugeId, humGaugeId, sala);
@@ -81,7 +87,7 @@ function abrirSala(salaId) {
   window.location.href = `room.html?sala=${salaId}`;
 }
 
-// Ordena pelo nome da sala (ordem crescente)
+// ordenar em ordem crescente pelo nome da sala 
 function sortRoom(salas) {
   salas.sort((a, b) => {
     // extrai apenas os números do nome (ex: sala-01 -> 1)
@@ -90,6 +96,47 @@ function sortRoom(salas) {
 
     return numA - numB;
   });
+}
+
+
+//verificar acesso
+export function checkAcess(permissao = null) {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    alert("Sessão expirada, faça login novamente.");
+    window.location.href = "login.html";
+    return false;
+  }
+
+  try {
+    const decoded = jwt_decode(token);
+    const now = Date.now() / 1000;
+    console.log("Token decodificado:", decoded);
+
+    if (permissao && decoded.role !== permissao) {
+      alert("Acesso negado! Apenas " + permissao + "s podem acessar esta página.");
+      window.location.href = "index.html";
+      return false;
+    }
+
+    if (decoded.exp && decoded.exp < now) {
+      alert("Sessão expirada, faça login novamente.");
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+      return false;
+    }
+
+    document.getElementById("conteudo").style.display = "block";
+    return true; // acesso liberado
+
+  } catch (e) {
+    console.error("Erro ao decodificar token:", e);
+    alert(`Erro: ${e}`);
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+    return false;
+  }
 }
 
 

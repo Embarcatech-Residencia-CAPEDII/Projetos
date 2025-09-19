@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="src/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Document</title>
+</head>
+
+<body class="default">
+
+    <nav>
+        <a href="index.html"><img src="src/img/logo2.png"></a>
+        <h1>Painel do Administrador</h1>
+        <div class="icons">
+            <!-- <a href="relatorio.html" title="Relatório"><i class="fa fa-file-excel-o"></i></a>
+            <a id="logoutBtn" title="Sair"><i class="fa fa-sign-out"></i></a> -->
+        </div>
+    </nav>
+
+    <div class="dashboard-admin">
+
+        <div class="menu-lateral">
+            <a data-section="dashboard" class="username active">
+                <i class="fa fa-dashboard"></i> Dashboard
+            </a>
+            <a data-section="user" type="submit">
+                <i class="fa fa-users"></i> Usuários
+            </a>
+            <a data-section="room" type="submit">
+                <i class="fa fa-building"></i> Salas
+            </a>
+            <!-- <a id="temp" type="submit">
+                <i class="fa fa-sun-o"></i> Temperaturas
+            </a> -->
+            <a data-section="reports" type="submit">
+                <i class="fa fa-file-text-o"></i> Relatórios
+            </a>
+            <hr>
+            <a id="logoutBtn" title="Sair">
+                <i class="fa fa-sign-out"></i> Sair
+            </a>
+        </div>
+
+        <div class="menu-principal">
+            <div id="roomsGrid" class="show room-grid"></div>
+            <div id="dashboard" class="hide admin-content"></div>
+            <button type="button" id="btn-click" class="hide btn-primary">Cadastrar Novo</button>
+        </div>
+
+
+        <!-- Modal Cadastrar Usuário-->
+        <dialog id="userInsert" tabindex="-1">
+            <h1>Editar</h1>
+            <form id="userForm">
+                <label for="username">Nome</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="password1">Senha</label>
+                <input type="password" id="senha" name="senha" required>
+
+                <label for="password2">Confirmar Senha</label>
+                <input type="password" id="senha2" name="senha2" required>
+
+                <p id="response" class="alert"></p>
+
+                <button type="button" id="userInsertBtn" class="btn-primary">Cadastrar</button>
+                <button type="button" id="userCloseBtn" class="btn">Fechar</button>
+            </form>
+        </dialog>
+
+        <!-- Modal Excluir-->
+        <dialog id="userDelete" tabindex="-1">
+            <h3>Confirmar exclusão?</h3>
+            <form id="roomForm">
+
+                <p id="deleteMessage" class="alert"></p>
+
+                <button type="button" id="userDeleteBtn" class="btn">Excluir</button>
+                <button type="button" id="userCancelBtn" class="btn-primary">Fechar</button>
+            </form>
+        </dialog>
+
+
+    </div>
+
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.2.9/justgage.min.js"></script>
+    <script type="module" src="src/js/admin.js"></script>
+    <script type="module" src="src/js/main.js"></script>
+</body>
+
+</html>
