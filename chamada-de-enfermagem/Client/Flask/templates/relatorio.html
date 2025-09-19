@@ -44,6 +44,14 @@
                 <div class="row m-3 w-75 mx-auto">
                     <h3>Chamadas recentes:</h3>
                     <div id="chamadas-lista">
+                        {% for chamada in chamadas %}
+                        
+                        <div class="chamada-div">
+                            <p> Local: {{ chamada.Local }} </p>
+                            <p> Número da sala: {{ chamada.Enfermaria }} </p>
+                            <p> data: {{ chamada.data }}</p>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

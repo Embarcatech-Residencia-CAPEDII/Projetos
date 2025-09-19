@@ -63,6 +63,28 @@ class MongoDBConnection:
             print('Error on insert document...')
             print(e) 
 
+    def insert_document(self,collection:str, data:dict)->bool:
+        
+        try:
+            if self.client is not None:
+                document = data
+                collection = self.db[collection]
+                result= collection.insert_one(document)
+
+                print(result)
+
+                return True
+
+            else:
+                print('Client not connected')
+                return False
+
+        except PyMongoError as e:
+            print('Error on insert document...')
+            print(e) 
+            return False
+        
+
     '''
     Lista os documentos na coleção
     '''
@@ -79,13 +101,13 @@ class MongoDBConnection:
     '''
     Verifica a existência de algum dado no banco de dados
     '''
-    def check_if_document_exists(self, collection:str, label:str, id_device:str):
+    def check_if_document_exists(self, collection:str, label:str, value:str):
 
         try:
             if self.client is not None:
                 collection_to_search = self.db[collection]
 
-                result = collection_to_search.find_one({label:id_device})
+                result = collection_to_search.find_one({label:value})
 
                 if result is not None:
                     return True                
@@ -95,6 +117,21 @@ class MongoDBConnection:
             
         return False
     
+    def return_document(self,collection:str, label_to_search:str, value_to_match:str):
+         
+        try:
+            if self.client is not None:
+                collection_to_search = self.db[collection]
+
+                result = collection_to_search.find_one({label_to_search:value_to_match})
+        
+                return result
+
+        except PyMongoError as e:
+            print('Error in check values...')
+            print(e)
+            
+        return False
     '''
     Função para fechar a conexão com o banco de dados
     '''
