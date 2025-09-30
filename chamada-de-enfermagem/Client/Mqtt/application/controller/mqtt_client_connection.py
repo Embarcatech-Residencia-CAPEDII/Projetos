@@ -33,12 +33,15 @@ class MqttClientConnection:
     def start_connection(self) -> bool:
 
         try:
-            mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1, self.client_name)
-
+            
+            mqtt_client = mqtt.Client(
+                client_id=self.client_name, protocol=mqtt.MQTTv5,
+                callback_api_version=mqtt.CallbackAPIVersion.VERSION2
+            )
+            
             if self.user_name and self.password:
                 mqtt_client.username_pw_set(self.user_name, self.password)
                 
-
             mqtt_client.on_connect      = ocm
             mqtt_client.on_message      = oms
             mqtt_client.on_subscribe    = osub
@@ -47,6 +50,7 @@ class MqttClientConnection:
             mqtt_client.connect(host=self.broker_ip, port=self.port, keepalive=self.keepalive)
             self.mqtt_client = mqtt_client
             self.mqtt_client.loop_start()
+            
         except Exception as e:
             print(e)
             return False

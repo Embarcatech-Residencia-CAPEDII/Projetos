@@ -13,7 +13,7 @@ mongo = MongoDBConnection(uri, database)
 '''
 Callback usado ao conectar o client a algum tópico do broker
 '''
-def on_connect(client, userdata, flags, rc):
+def on_connect(client, userdata, flags, rc, properties=None):
     if rc != 0:
         print('Conexão mal sucedida, erro:', rc, '\n Tentando novamente...')
 
@@ -26,7 +26,6 @@ def on_disconnect(client, userdata, rc):
     print('Tentando novamente...')
     try:
         client.reconnect()
-        print('Reconexão bem sucedida!')
 
     except Exception as e:
         print('Conexão mal sucedida, erro:', rc)
@@ -52,7 +51,7 @@ def on_disconnect(client, userdata, rc):
     }
 '''
 
-def on_message(client, userdata, message):
+def on_message(client, userdata, message, properties=None):
     payload = json.loads(message.payload.decode())
     print(f'Mensagem recebida no tópico {message.topic}: \n{payload}')
 
@@ -96,7 +95,7 @@ def on_message(client, userdata, message):
                         'Data': datetime.now()
                     }
 
-                    print(mongo.insert_document_collection('chamadas', document))
+                    mongo.insert_document_collection('chamadas', document)
 
             if local_topic == 'enfermagem':
                 print(f'Mensagem enviada para: {dispositivo_id} para a {local_emergencia}: {room_number}, com o comando de: {comando}')
@@ -107,5 +106,5 @@ def on_message(client, userdata, message):
 '''
 Callback para conferir se a inscrição em algum tópico foi bem sucedida
 '''
-def on_subscribe(client, userdata, mid, granted_os):
+def on_subscribe(client, userdata, mid, granted_os, properties=None):
     print('Inscrito com sucesso!')

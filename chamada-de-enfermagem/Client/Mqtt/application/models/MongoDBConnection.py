@@ -84,6 +84,22 @@ class MongoDBConnection:
             print(e)
             
         return False
+    
+    '''
+    Retorna os dados com uma query de data
+    '''
+    def list_documents_by_date(self, collection:str, field_data:str, end_date:str):
+        try:
+            if self.client is not None:
+                collection = self.db[collection]
+                return list(collection.find({
+                                field_data:{'$lt': end_date}}))
+            else:
+                print('Client not connected')
+        except PyMongoError as e:
+            print('Error in list documents...')
+            print(e)
+
     '''
     Insere um novo documento na coleção
     '''
@@ -95,7 +111,7 @@ class MongoDBConnection:
                 collection = self.db[collection]
                 result = collection.insert_one(document_to_save)
 
-                print(result)
+                return result
 
             else:
                 print('Client not connected')
