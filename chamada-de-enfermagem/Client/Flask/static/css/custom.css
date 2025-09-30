@@ -14,14 +14,75 @@
 
 .borda-conteiner {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    border-radius: 1vw;
+    border-radius: 0.8vw;
 }
 
-.chamada-div{
+.box-container {
+    width: 90dvw;
+    display: flex;
+    justify-content: center;
+    
+}
 
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    border-radius: 1vw;
-    padding: 10px;
-    width: 30vw;
-    margin-top: 15px;
+.dados-rapidos {
+    font-size: larger;
+    text-align: center;
+}
+
+.dados-rapidos div p {
+    margin: 1rem;
+}
+
+.chamada-exibir {
+    width: 10vw;
+    padding: 6px;
+}
+
+
+.icon-side {
+    width: 40px;
+}
+
+.chamada-exibir p {
+    margin-top: 0;
+    margin-bottom: 0;
+    
+}
+
+#chamadas-lista {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* duas colunas iguais */
+    gap: 10px; /* espaço entre os itens */
+}
+
+.paginacao {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  bottom: 10px; 
+}
+
+.paginacao a {
+  color: #333;
+  padding: 8px 12px;
+  margin: 0 4px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.paginacao a:hover {
+  background: #f0f0f0;
+}
+
+.paginacao a.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.paginacao a.prev,
+.paginacao a.next {
+  font-weight: bold;
 }
