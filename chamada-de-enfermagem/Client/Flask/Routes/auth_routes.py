@@ -5,6 +5,7 @@ from Flask.Services.auth_service import AuthService
 from Flask.Models.user_db_model import UserDBModel
 from Flask.Models.user_model import User
 from Flask.auth import SECRET_KEY
+from Flask.auth import token_required, admin_required
 from Mqtt.application.models.MongoDBConnection import MongoDBConnection
 from dotenv import load_dotenv
 import os
@@ -24,6 +25,12 @@ auth_service = AuthService(user_db_model)
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
+'''
+ROTAS
+
+/auth/register 
+/auth/login
+'''
 
 '''
 Rota de registro
@@ -38,16 +45,16 @@ FORMATO DO JSON
 
 retorna um json com mensagem de sucesso/falha na inserção
 '''
+
 @auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    print(data)
     mongo_conn.start_connection()
 
     user = User(data['username'], data['password'], data['role'])
 
     if user.isValid() == False:
-        return {'Error': 'Valores falstos'}, 401
+        return {'Error': 'Valores faltosos'}, 401
         
     result = auth_service.register(user.getUsername(), user.getPassword(), user.getRole(), user.getCreateAt())
     
@@ -62,7 +69,7 @@ POST para receber as informações do usuário por meio de um formulário
 
 retorna um token para acessar o sistema ou uma mensagem de credenciais inválidas
 '''
-@auth_bp.route('/login', methods=['POST'])
+@auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
 
     if request.method == 'POST':
@@ -91,3 +98,5 @@ def login():
             return resp
 
         return render_template('login.html', error='Credenciais Inválidas')
+
+    return render_template('login.html')

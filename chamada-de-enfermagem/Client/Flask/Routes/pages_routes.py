@@ -34,7 +34,6 @@ def relatorio_page():
     mongo_conn.start_connection()
 
     chamadas = mongo_conn.list_documents('chamadas')
-    print(chamadas)
 
     mongo_conn.close_connection()
 

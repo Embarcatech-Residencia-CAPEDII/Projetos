@@ -28,6 +28,6 @@ class UserDBModel():
     retorna um valor booleano
     '''
     def insert_user(self, user_data:dict):
-        return self.db.insert_document("users", user_data)
+        return self.db.insert_document_collection("users", user_data)
     
 

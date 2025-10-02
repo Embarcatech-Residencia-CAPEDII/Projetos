@@ -1,6 +1,6 @@
 import jwt
 from functools import wraps
-from flask import request, jsonify, redirect, url_for
+from flask import request, jsonify, redirect, url_for, render_template
 from dotenv import load_dotenv
 import os
 
@@ -27,7 +27,7 @@ def token_required(f):
                 token = auth_header.split(' ')[1]
 
         if not token:
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('auth.login')), 200
             
         try:
             data = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
@@ -35,7 +35,7 @@ def token_required(f):
             role = data.get('role')
 
         except jwt.ExpiredSignatureError:
-            return redirect(url_for('pages.home'))
+            return redirect(url_for('pages.home')), 401
             
         except jwt.InvalidTokenError:
             return ({'error': 'Token inválido!'}), 401
@@ -43,4 +43,21 @@ def token_required(f):
         return f(*args, **kwargs)
     
     return decorated
+
+'''
+Decorator para uso em rotas para acesso somente a admins
+'''
+def admin_required(f):
+    @wraps(f)
+    @token_required # já valida token
+
+    def decorated(*args, **kwargs):
+        role = jwt.decode(request.cookies.get('jwt'), SECRET_KEY, algorithms=['HS256']).get('role')
+        
+        if role != 'admin':
+            return render_template('login.html', error = 'Acesso negado'), 401
+        
+        return f(*args, **kwargs)
+    return decorated
+
 
