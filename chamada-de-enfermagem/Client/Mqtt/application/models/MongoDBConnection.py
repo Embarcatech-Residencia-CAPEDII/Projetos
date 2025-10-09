@@ -1,6 +1,7 @@
  
 from pymongo.mongo_client import MongoClient, PyMongoError, ConnectionFailure
 from pymongo.server_api import ServerApi
+from bson.objectid import ObjectId
 import os
 from datetime import datetime
 
@@ -69,7 +70,26 @@ class MongoDBConnection:
             
         return False
     
-    def return_document(self,collection:str, label_to_search:str, value_to_match:str):
+        '''
+    Verifica a existência de algum dado no banco de dados
+    '''
+    def check_if_document_exists_by_id(self, collection:str, document_id:str):
+
+        try:
+            if self.client is not None:
+                collection_to_search = self.db[collection]
+
+                result = collection_to_search.find_one({'_id':ObjectId(document_id)})
+
+                if result is not None:
+                    return True                
+        except PyMongoError as e:
+            print('Error in check values...')
+            print(e)
+            
+        return False
+    
+    def return_document(self,collection:str, label_to_search:str, value_to_match:str) -> dict:
          
         try:
             if self.client is not None:
@@ -85,6 +105,21 @@ class MongoDBConnection:
             
         return False
     
+    def return_document_by_id(self, collection:str, id:str):
+
+        try:
+            if self.client is not None:
+
+                collection_to_search = self.db[collection]
+
+                result = collection_to_search.find_one({'_id':ObjectId(id)})
+
+                return result
+            
+        except PyMongoError as e:
+            print('Error in check values...')
+            print(e)
+
     '''
     Retorna os dados com uma query de data
     '''
@@ -123,17 +158,24 @@ class MongoDBConnection:
     '''
     Função para update de um valor de um label em uma collection
     '''
-    def update_document(self, collection:str, label_to_match:str, value_to_match:str, label_to_update:str, new_value:str) -> bool: 
+    def update_document_by_id(self, collection:str, document_id:str, label_to_update:str, new_value:str) -> bool: 
 
         try:
             if self.client is not None:
 
-                if self.check_if_document_exists(collection, label_to_match, value_to_match) == False:
+                document_to_update = self.return_document_by_id(collection, document_id)
+                
+                if document_to_update == None:
                     print('No values in DB')
                     return False
-
+                
+                
+                if document_to_update.get(label_to_update) == new_value:
+                    print('Same Value, update not complete')
+                    return False
+                
                 collection_search = self.db[collection]                
-                result = collection_search.update_one({label_to_match:value_to_match}, {
+                result = collection_search.update_one({'_id':ObjectId(document_id)}, {
                     '$set': {label_to_update: new_value}
                 } )
 
@@ -166,6 +208,36 @@ class MongoDBConnection:
                 
                 collection_delete = self.db[collection]
                 result = collection_delete.delete_one({label_to_match: value_to_match})
+
+                if result == False:
+                    print(f'Error in delete value: {result}')
+                    return False
+                
+                print(f'Successfully in delete value: {result}')
+                return True
+            
+            else:
+                print('Client not connected')
+
+        except PyMongoError as e:
+            print('Error in delete value')
+            print(e)
+            return False
+        
+    '''
+    Função para deletar um documento da database
+    '''
+    def delete_document_by_id(self, collection:str, document_id:str) -> bool:
+
+        try:
+            if self.client is not None:
+                
+                if self.check_if_document_exists_by_id(collection, document_id) == False:
+                    print('No values in DB')
+                    return False
+                
+                collection_delete = self.db[collection]
+                result = collection_delete.delete_one({'_id': ObjectId(document_id)})
 
                 if result == False:
                     print(f'Error in delete value: {result}')
