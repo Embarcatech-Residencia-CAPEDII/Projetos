@@ -23,7 +23,7 @@ function renderChamadas(dados, containerId) {
 
 async function fetchChamadas(containerId) {
     try {
-        const response = await fetch("/chamadas"); 
+        const response = await fetch("/api/chamadas"); 
         if (!response.ok) {
             throw new Error("Erro ao buscar chamadas");
         }

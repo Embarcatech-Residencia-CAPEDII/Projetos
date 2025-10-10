@@ -1,6 +1,7 @@
 const abrir = document.getElementById('abrir');
 const fechar = document.getElementById('fechar');
 const form = document.getElementById('formulario');
+const formUsers = document.getElementById('formUser');
 
 abrir.addEventListener('click', () => {
   form.style.display = 'block';
@@ -10,22 +11,53 @@ fechar.addEventListener('click', () => {
   form.style.display = 'none';
 });
 
+formUsers.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(formUsers);
+  const dados = Object.fromEntries(formData.entries());
+
+  try {
+    const resposta = await fetch('/api/users/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'  
+      },
+      body: JSON.stringify(dados)
+    });
+
+    const resultado = await resposta.json();
+    console.log(resultado);
+    carregarUsuarios();
+
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 async function carregarUsuarios() {
-  const resposta = await fetch('/usuarios');  // pega JSON do Flask
+  const resposta = await fetch('/api/users');  // pega JSON do Flask
   const usuarios = await resposta.json();
 
-  const planilha = document.getElementById('planilha');
+  const planilha = document.getElementById('userTable');
+
+  planilha.innerHTML = "";
 
   usuarios.forEach(usuario => {
-    planilha.innerHTML += `
-      <div class="celula">${usuario.id}</div>
-      <div class="celula">${usuario.nome}</div>
-      <div class="celula">${usuario.funcao}</div>
+    const linha = document.createElement('div');
+    linha.classList.add('linha');
+
+    linha.innerHTML += `
+      <div class="celula">0</div>
+      <div class="celula">${usuario.username}</div>
+      <div class="celula">${usuario.role}</div>
       <div class="celula">
-        <button class="btn-excluir" data-id="${usuario.id}">Excluir</button>
-        <button class="btn-editar" data-id="${usuario.id}">Alterar</button>
+        <button class="btn-excluir" data-id="${usuario._id.$oid}">Excluir</button>
+        <button class="btn-editar" data-id="${usuario._id.$oid}">Alterar</button>
       </div>
     `
+
+    planilha.appendChild(linha);
     })
 
   document.querySelectorAll('.btn-excluir').forEach(btn => {

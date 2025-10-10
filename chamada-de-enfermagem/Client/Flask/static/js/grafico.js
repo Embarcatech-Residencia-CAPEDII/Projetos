@@ -32,7 +32,7 @@ grafico = new Chart("grafico-chamadas", {
 
 async function atualizarGrafico(tipo = "hora") {
   try {
-    fetch(`/grafico/${tipo}`).then(res => res.json()).then(dados => {
+    fetch(`/api/chamadas/dia/contagem`).then(res => res.json()).then(dados => {
       grafico.data.datasets[0].data = dados;
       grafico.data.labels = labels[tipo];
       grafico.options.scales.yAxes = axesY[tipo];

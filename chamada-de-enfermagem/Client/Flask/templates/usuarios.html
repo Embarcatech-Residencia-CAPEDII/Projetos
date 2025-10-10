@@ -33,13 +33,18 @@
         <div class="d-flex flex-column align-items-center">
           <ul class="nav nav-pills flex-column mb-auto text-center w-100">
             <li>
-              <a href="/" class="nav-link py-2 px-2">
+              <a href="/relatorio" class="nav-link py-2 px-2">
                 <img src="static/img/icons/home.png" alt="" class="icon-side">
               </a>
             </li>
             <li>
               <a href="/usuarios" class="nav-link py-2 px-2">
                 <img src="static/img/icons/usuarios-alt.png" alt="" class="icon-side">
+              </a>
+            </li>
+            <li>
+              <a href="/controladores" class="nav-link py-2 px-2">
+                <img src="static/img/icons/computador.png" alt="" class="icon-side">
               </a>
             </li>
             
@@ -51,8 +56,6 @@
             </a>
             <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser3">
               <li><a class="dropdown-item" href="#">Sair</a></li>
-              <li><a class="dropdown-item" href="#">Settings</a></li>
-              <li><a class="dropdown-item" href="#">Profile</a></li>
             </ul>
           </div>
         </div>
@@ -61,11 +64,16 @@
       <!-- Conteudo -->
        <div class="col">
             <div class="usuarios-tabela">
-                <div id="planilha">
+                <div id="planilha" class="borda-conteiner">
+                  <div class="linha">
                     <div class="celula cabecalho">Id</div>
                     <div class="celula cabecalho">Nome</div>
                     <div class="celula cabecalho">Funcao</div>
                     <div class="celula cabecalho">Ações</div>
+                  </div>
+                    <div id="userTable">
+                      
+                    </div>
                 </div>
             </div>
 
@@ -74,17 +82,17 @@
 
               <div id="formulario">
                 <h3>Cadastrar Usuário</h3>
-                <form id="form">
+                <form id="formUser">
                   <label>Nome:</label>
-                  <input type="text" name="nome" required><br><br>
+                  <input type="text" name="username" required><br><br>
 
                   
                   
                   <label>Senha:</label>
-                  <input type="text" name="funcao" required><br><br>
+                  <input type="text" name="password" required><br><br>
                   
                   <label for="funcao">Função:</label>
-                  <select id="funcao" name="funcao">
+                  <select id="funcao" name="role">
                     <option value="admin">Administrador</option>
                     <option value="usuario">Usuário</option>
                   </select>

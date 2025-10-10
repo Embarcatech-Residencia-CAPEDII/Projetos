@@ -1,11 +1,15 @@
 #planilha {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 colunas iguais */
-  gap: 1px;
   background-color: #ccc;
   width: 80%;
   margin: 20px auto;
   border: 1px solid #ccc;
+}
+
+.linha {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr 1.5fr;
+  /* border-bottom: 1px solid #ddd; */
+  align-items: center;
 }
 
 .celula {
