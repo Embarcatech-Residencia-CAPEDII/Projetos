@@ -62,7 +62,9 @@ class MongoDBConnection:
                 result = collection_to_search.find_one({label:value})
 
                 if result is not None:
-                    return True                
+                    return True  
+                
+                return False              
         except PyMongoError as e:
             print('Error in check values...')
             print(e)
@@ -76,7 +78,10 @@ class MongoDBConnection:
                 collection_to_search = self.db[collection]
 
                 result = collection_to_search.find_one({label_to_search:value_to_match})
-        
+
+                if result == None:
+                    return False
+
                 return result
 
         except PyMongoError as e:

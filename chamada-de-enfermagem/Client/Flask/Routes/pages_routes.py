@@ -19,6 +19,7 @@ mongo_conn = MongoDBConnection(uri, database)
 '''
 Rota de home(/)
 renderiza o template de login no navegador do usuário
+acesso para todos que tem a url
 '''
 @pages_bp.route('/')
 def home():
@@ -26,6 +27,7 @@ def home():
 
 '''
 Rota para o template de relatório apenas quando o usuário estiver logado
+acesso para users/admins
 '''
 @pages_bp.route('/relatorio')
 @token_required
@@ -39,3 +41,26 @@ def relatorio_page():
 
     return render_template('relatorio.html', chamadas=chamadas)
 
+@pages_bp.route('/usuarios')
+def usuario_page():
+
+    return render_template('usuarios.html')
+
+'''
+Rota protegida apenas para admins
+'''
+@pages_bp.route('/dispositivos')
+def dispositivos_page():
+
+    return render_template('dispositivos.html')
+
+
+'''
+Rota de mapa das enfermarias
+
+acesso para users/admins
+'''
+@pages_bp.route('/mapa')
+def mapa_page():
+
+    return render_template('mapa_enfermarias.html')

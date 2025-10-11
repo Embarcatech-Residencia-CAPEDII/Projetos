@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify
 from datetime import datetime
-from bson.json_util import dumps
 from Flask.auth import token_required 
+from Flask.Services.convert_objectdID import convert_all_id_to_string, convert_object_id_to_string
 from Mqtt.application.models.MongoDBConnection import MongoDBConnection
 from dotenv import load_dotenv
 import os
@@ -39,7 +39,7 @@ def return_all_documents_chamadas():
     mongo_conn.close_connection()
 
     if documents:
-        json_docs = dumps(documents)
+        json_docs = convert_all_id_to_string(documents)
         return jsonify(json_docs), 201
     
     return {'erro': 'Documentos não encontrados'}, 400

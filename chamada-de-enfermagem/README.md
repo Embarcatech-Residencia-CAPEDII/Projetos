@@ -88,6 +88,8 @@ pip install dotenv
 pip install paho-mqtt
 pip install PyJWT
 pip install jwt
+pip install gunicorn
+pip install gunicorn[gevent]
 ```
 ### **4. No arquivo .env coloque as credenciais para conexão com seu Banco de dados e do broker**
 ```
@@ -113,7 +115,7 @@ cd ./chamada-de-enfermagem/Client
 ```bash
 python -m Mqtt.main        #Windows/Linux
 ```
-### **6. Abrir o Client Flask para visualizar a tabela de chamadas**
+### **6. Abrir o Client Flask em ambiente de desenvolvimento para visualizar o software**
 ```bash
 cd ./chamada-de-enfermagem/Client
 ```
@@ -121,7 +123,15 @@ cd ./chamada-de-enfermagem/Client
 python -m Flask.app        #Windows/Linux
 ```
 
-### **7. Realizar um teste**
+### **7. Abrir o Client Flask em ambiente de produção para visualizar o software**
+```bash
+cd ./chamada-de-enfermagem/Client
+```
+```bash
+gunicorn -w 4 -b 0.0.0.0:5000 Flask.app:app        #Linux
+```
+
+### **8. Realizar um teste**
 Em outro terminal execute o arquivo pub_test.py e veja a nova chamada dentro do app 
 ```bash
 python pub_test.py  #Windows/Linux

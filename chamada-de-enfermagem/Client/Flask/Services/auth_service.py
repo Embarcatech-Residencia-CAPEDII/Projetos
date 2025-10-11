@@ -50,5 +50,18 @@ class AuthService:
 
         return user
     
+    '''
+    Função de delete de usuários
+    '''
+    def delete(self, document_id:str):
 
+        if self.user_db_model.find_user_by_id(document_id) is False:
+            return {'message': 'usuário não existente'}, 400
+        
+        if self.user_db_model.delete_user_by_id(document_id) is False:
+            return {'message': 'usuário não deletado'}, 400
+        
+        return {'message': 'usuário deletado com sucesso!'}, 201
+    
+    
 

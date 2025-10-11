@@ -20,6 +20,9 @@ class User():
         if not self.password or self.password.split() == '':
             print('Error in password')
             return False
+        if self.role != 'user' and self.role != 'admin' or self.role.split() == '':
+            print('Error in role')
+            return False
         
         return True
 
