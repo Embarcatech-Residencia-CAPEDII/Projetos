@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from Flask.Models.user_db_model import UserDBModel
 from datetime import datetime
-
+from flask import jsonify
 '''
 Classe de utilitário de autenticação
 '''
@@ -21,7 +21,7 @@ class UserService:
     '''
     def register(self, username:str, password:str, role:str, createdAt: datetime):
         if self.user_db_model.check_user_exists_by_username(username):
-            return {'error': 'Usuário já existente'}, 400
+            return jsonify({'error': 'Nome de usuário em uso'}), 400
         
         hashed_pw = generate_password_hash(password)
 
@@ -32,9 +32,9 @@ class UserService:
             'createdAt': createdAt
             }) is False:
 
-            return {'message': 'Usuário não inserido no banco de dados'}, 500
+            return jsonify({'message': 'Usuário não inserido no banco de dados'}), 500
 
-        return {'message': 'Usuário cadastrado com sucesso'}, 201
+        return jsonify({'message': 'Usuário cadastrado com sucesso'}), 201
 
 
     '''
@@ -56,12 +56,12 @@ class UserService:
     def delete(self, document_id:str):
 
         if self.user_db_model.check_if_user_exists_by_id(document_id) is False:
-            return {'message': 'usuário não existente'}, 400
+            return jsonify({'message': 'usuário não existe'}), 404
         
         if self.user_db_model.delete_user_by_id(document_id) is False:
-            return {'message': 'usuário não deletado'}, 500
+            return jsonify({'message': 'usuário não deletado'}), 500
         
-        return {'message': 'usuário deletado com sucesso!'}, 200
+        return jsonify({'message': 'usuário deletado com sucesso!'}), 200
     
     '''
     Função de editar usuário
@@ -73,16 +73,19 @@ class UserService:
 
         for key, value in document_with_updates.items():
 
+            if key != 'username' and key != 'password' and key != 'role':
+                return jsonify({'Message': 'Campos inválidos'}), 400
+
             if not value or value.split() == '' or ' ' in value:
-                return {'Message': 'Valores com faltosos ou com espaço, tente novamente'}, 400
+                return jsonify({'Message': 'Valores com faltosos ou com espaço, tente novamente'}), 400
 
             if key == 'username':
                 if self.user_db_model.check_user_exists_by_username(document_with_updates['username']):
-                    return {'message': 'nome de usuário em uso'}, 400
+                    return jsonify({'message': 'nome de usuário em uso'}), 400
             
             if key == 'role':    
                 if value != 'user' and value != 'admin':
-                    return {'message': 'Valores errados em tipo de usuário'} , 400
+                    return jsonify({'message': 'Valores errados em tipo de usuário'}) , 400
                 
             if key == 'password':
                 password = value
@@ -90,6 +93,6 @@ class UserService:
                 document_with_updates['password'] = hashed_pw
             
         if self.user_db_model.update_user_by_id(document_id, document_with_updates) is False:
-            return {'message': 'campos não atualizados'}, 500
+            return jsonify({'message': 'campos não atualizados'}), 500
 
-        return {'message': 'campos atualizados!'}, 200
+        return jsonify({'message': 'campos atualizados!'}), 200

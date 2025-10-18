@@ -8,6 +8,8 @@ from Flask.Models.device_db_model import DeviceDBModel
 from Flask.Models.device_model import Device
 from dotenv import load_dotenv
 import os
+import logging
+
 
 '''
 Arquivo para rotas para retornar os documentos de chamadas
@@ -39,17 +41,27 @@ Rota que retorna uma lista com todos os dispositivos
 '''
 @devices_bp.route('/', methods=['GET'])
 def return_all_devices():
-    mongo_conn.start_connection()
 
-    devices = device_db_model.return_all_devices()
-
-    mongo_conn.close_connection()
-    if devices:
-
-        json_devices = convert_all_id_to_string(devices)
-
-        return jsonify(json_devices), 200
+    try:
+        mongo_conn.start_connection()
+    except Exception as e:
+        logging.exception('Erro ao conectar ao banco de dados')
+        return jsonify({'Error':'Erro interno do banco de dados'}), 500
     
+    try:
+        devices = device_db_model.return_all_devices()
+
+        if devices:
+            json_devices = convert_all_id_to_string(devices)
+            return jsonify(json_devices), 200
+        
+    except Exception as e:
+        logging.exception('Error in return documents')
+        return jsonify({'Error':'failure in return documents'}), 400
+
+    finally:
+        mongo_conn.close_connection()
+
     return {'Error': 'Devices não encontrados'},404
 
 '''
@@ -57,16 +69,24 @@ Rota que retorna a quantidade com todos os dispositivos cadastrados
 '''
 @devices_bp.route('/quantidade', methods=['GET'])
 def return_count_devices():
-    mongo_conn.start_connection()
+    try:
+        mongo_conn.start_connection()
+    except Exception as e:
+        logging.exception('Erro ao conectar ao banco de dados')
+        return jsonify({'error':'Erro interno do banco de dados'}), 500
 
-    count_devices = device_db_model.return_count_all_devices()
-
-    mongo_conn.close_connection()
-
-    if count_devices:
-        return {'Quantidade': count_devices}, 200
+    try:
+        count_devices = device_db_model.return_count_all_devices()
+        if count_devices:
+            return jsonify({'Quantidade': count_devices}), 200
+        
+    except Exception as e:
+        logging.exception('Error in return documents')
+        return jsonify({'Error'})
+    finally:
+        mongo_conn.close_connection()
     
-    return {'Error': 'Devices não encontrados'}, 404
+    return jsonify({'Error': 'Devices não encontrados'}), 404
 
 '''
 Rota que registra um novo dispositivo no banco de dados
@@ -80,16 +100,28 @@ APENAS PARA ADMINS
 def register_device():
     data = request.get_json()
 
-    mongo_conn.start_connection()
+    try:
+        mongo_conn.start_connection()
+    except Exception as e:
+        logging.exception('Erro ao conectar ao banco de dados')
+        return jsonify({'error':'Erro interno do banco de dados'}), 500
 
-    device = Device(data['device'])
+    try:
+        if not 'device' in data:
+            return jsonify({'Erro': 'Campos incorretos'}), 400
+        
+        device = Device(data['device'])
+        if device.isValid() == False:
+            return jsonify({'Error': 'Valores incorretos, tente novamente'}), 400
+        
+        result = device_service.register(device.getDevice(), device.getCreatedAt())
 
-    if device.isValid() == False:
-        return {'Error': 'Valores incorretos, tente novamente'}, 400
-    
-    result = device_service.register(device.getDevice(), device.getCreatedAt())
+    except Exception as e:
+        logging.exception('Error in register', e)
+        result = jsonify({'Error':'Falha em tentativa de registro'}), 500
 
-    mongo_conn.close_connection()
+    finally:
+        mongo_conn.close_connection()
 
     return result
 
@@ -105,13 +137,26 @@ APENA PARA ADMINS
 @devices_bp.route('/delete', methods=['DELETE'])
 def delete_device():
 
-    data = request.get_json()
+    try:
+        mongo_conn.start_connection()
+    except Exception as e:
+        logging.exception('Erro ao conectar ao banco de dados')
+        return jsonify({'error':'Erro interno do banco de dados'}), 500
+    
+    try:
+        data = request.get_json()
 
-    mongo_conn.start_connection()
+        if not "document_id" in data:
+            return jsonify({'Error': 'Campo inválido'}), 400
+        
+        result = device_service.delete(data['document_id'])
+    
+    except Exception as e:
+        logging.exception('Error in delete', e)
+        result = jsonify({'Error': 'Falha na tentativa de deletar device'}), 500
 
-    result = device_service.delete(data['document_id'])
-
-    mongo_conn.close_connection()
+    finally:
+        mongo_conn.close_connection()
 
     return result
 
@@ -123,11 +168,24 @@ APENA PARA ADMINS
 @devices_bp.route('/delete/<string:document_id>', methods=['DELETE'])
 def delete_device_by_id(document_id):
 
-    mongo_conn.start_connection()
+    try:
+        mongo_conn.start_connection()
+    except Exception as e:
+        logging.exception('Erro ao conectar ao banco de dados')
+        return jsonify({'error':'Erro interno do banco de dados'}), 500
+    
+    try:
+        if not document_id:
+            return jsonify({'Error': 'Campo inválido'}), 400
+        
+        result = device_service.delete(document_id)
+    
+    except Exception as e:
+        logging.exception('Error in register', e)
+        result = jsonify({'Error': 'Falha na tentativa de deletar device'}), 500
 
-    result = device_service.delete(document_id)
-
-    mongo_conn.close_connection()
+    finally:
+        mongo_conn.close_connection()
 
     return result
 
@@ -144,14 +202,24 @@ APENAS PARA ADMINS
 @devices_bp.route('/update', methods=['PUT'])
 def update_device_by_id():
 
-    data = request.get_json()
-
-    mongo_conn.start_connection()
     try:
+        mongo_conn.start_connection()
+    except Exception as e:
+        logging.exception('Erro ao conectar ao banco de dados')
+        return jsonify({'error':'Erro interno do banco de dados'}), 500
+    
+    try:
+        data = request.get_json()
+
+        if not 'document_id' in data or 'device' not in data:
+            return jsonify ({'Error': 'Campos inválidos'}), 400
+
         result = device_service.update(data['document_id'], data)
     except Exception as e:
-        print('Error in update')
-        print(e)
-        result = {'message':'Error in update'}, 400
+        logging.exception('Error in update')
+        result = jsonify({'Error':'falha ao atualizar device'}), 500
+
+    finally:
+        mongo_conn.close_connection()
 
     return result

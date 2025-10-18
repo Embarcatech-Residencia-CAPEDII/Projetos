@@ -27,7 +27,7 @@ def token_required(f):
                 token = auth_header.split(' ')[1]
 
         if not token:
-            return redirect(url_for('auth.login')), 200
+            return redirect(url_for('pages.home')), 200
             
         try:
             data = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
@@ -35,10 +35,10 @@ def token_required(f):
             role = data.get('role')
 
         except jwt.ExpiredSignatureError:
-            return redirect(url_for('pages.home')), 401
+            return render_template('login.html', error='Sessão expirada, Faça login novamente'), 401
             
         except jwt.InvalidTokenError:
-            return ({'error': 'Token inválido!'}), 401
+            return render_template('login.html', error= 'Token inválido. Faça login novamente'), 401
             
         return f(*args, **kwargs)
     

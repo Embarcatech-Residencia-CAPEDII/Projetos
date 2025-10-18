@@ -9,6 +9,7 @@ from Mqtt.application.models.MongoDBConnection import MongoDBConnection
 from dotenv import load_dotenv
 import os
 import json
+import logging
 
 '''
 Arquivo para rotas do client com users
@@ -42,16 +43,27 @@ APENAS PARA ADMINS
 @user_bp.route('/', methods=['GET'])
 def return_all_users():
 
-    mongo_conn.start_connection()
+    try:
+        mongo_conn.start_connection()
+    except Exception as e:
+        logging.exception('Error in connect to database')
+        return {'Error': 'Erro interno do banco de dados'}, 500
+    try:
+        users = mongo_conn.list_all_documents_from_collection('users')
 
-    users = mongo_conn.list_all_documents_from_collection('users')
+        if users:
+            json_users = convert_all_id_to_string(users)
 
-    if users:
-        json_users = convert_all_id_to_string(users)
+            return jsonify(json_users), 201
 
-        return jsonify(json_users), 201
+    except Exception as e:
+        logging.exception('Error in return documents')
+        return jsonify({'Error': 'falha ao procurar documentos'})
+
+    finally:
+        mongo_conn.close_connection()
     
-    return {'Error', 'Usuário não encontrado'}, 401
+    return {'Error': 'Usuários não encontrados'}, 404
 
 '''
 Rota de api para registar usuário
@@ -65,23 +77,34 @@ APENAS PARA ADMINS
 '''
 @user_bp.route('/register', methods=['POST'])
 def register():
-    data = request.get_json()
 
-    mongo_conn.start_connection()
-
-    user = User(data['username'], data['password'], data['role'])
-
-    if user.isValid() == False:
-        return {'Error': 'Valores faltosos'}, 401
-        
-    result = user_service.register(user.getUsername(), user.getPassword(), user.getRole(), user.getCreateAt())
     
-    if result != None:
-        return result
+    try:
+        mongo_conn.start_connection()
+    except Exception as e:
+        logging.exception('Error in connect to database')
+        return jsonify({'Error': 'Erro interno do banco de dados'}), 500
+    
+    try:
+        data = request.get_json()
 
-    mongo_conn.close_connection()
+        if not 'username' in data or 'password' not in data or 'role' not in data:
+            return jsonify({'Error': 'Campos inválidos'}), 400
+            
+        user = User(data['username'], data['password'], data['role'])
+        if user.isValid() == False:
+            return {'Error': 'Campos inválidos'}, 400
+            
+        result = user_service.register(user.getUsername(), user.getPassword(), user.getRole(), user.getCreateAt())
+          
+    except Exception as e:
+        logging.exception('Error in register user')
+        result = jsonify({'Error': 'falha em registrar usuário'}), 500
 
-    return {'Error', 'usuário não inserido'}, 401
+    finally:
+        mongo_conn.close_connection()
+
+    return result
  
 '''
 Rota de remoção de usuário
@@ -93,17 +116,29 @@ APENAS PARA ADMINS
 '''
 @user_bp.route('/delete', methods=['DELETE'])
 def delete_user():
-    data = request.get_json()
 
-    mongo_conn.start_connection()
+    try:
+        mongo_conn.start_connection()
+    except Exception as e:
+        logging.exception('Error in connect to database')
+        return jsonify({'Error': 'Erro interno do banco de dados'}),500
+    
+    try:
+        data = request.get_json()
 
-    result = user_service.delete(data['document_id'])
+        if not 'document_id' in data:
+            return jsonify({'Error': 'Campos inválidos'}), 400
+        
+        result = user_service.delete(data['document_id'])
+        
+    except Exception as e:
+        logging.exception('Error in delete user')
+        result = jsonify({'Error': 'Falha ao deletar usuário'}), 500
+    
+    finally:
+        mongo_conn.close_connection()
 
-    mongo_conn.close_connection()
-
-    print(result)
-
-    return jsonify(result)
+    return result
 
 '''
 Rota de remoção de usuário por url
@@ -113,13 +148,26 @@ APENAS PARA ADMINS
 @user_bp.route('/delete/<string:document_id>', methods=['DELETE'])
 def delete_user_by_id(document_id):
 
-    mongo_conn.start_connection()
+    try:
+        mongo_conn.start_connection()
+    except Exception as e:
+        logging.exception('Error in connect to database')
+        return jsonify({'Error': 'Erro interno do banco de dados'}),500
+    
+    try:
+        if not document_id:
+            return jsonify({'Error': 'ID inválido'}), 400
+        
+        result = user_service.delete(document_id)
+        
+    except Exception as e:
+        logging.exception('Error in delete user')
+        result = jsonify({'Error': 'Falha ao deletar usuário'}), 500
+    
+    finally:
+        mongo_conn.close_connection()
 
-    result = user_service.delete(document_id)
-
-    print(result)
-
-    return jsonify(result)
+    return result
 
 '''
 Rota de edição de usuários
@@ -135,14 +183,25 @@ APENAS PARA ADMINS
 @user_bp.route('/update', methods=['PUT'])
 def update_user_by():
     
-
-    data = json.loads(request.get_data())
-
-    if not 'document_id' in data:
-        return {'Error': 'Campos faltosos'}, 401
+    try:
+        mongo_conn.start_connection()
+    except Exception as e:
+        logging.exception('Error in connect to database')
+        return jsonify({'Error': 'Erro interno do banco de dados'}),500
     
-    mongo_conn.start_connection()
-    result = user_service.update(data['document_id'], data)
-    mongo_conn.close_connection()
+    try:
+        data = request.get_json()
 
-    return jsonify(result)
+        if not 'document_id' in data:
+            return {'Error': 'Campos inválidos'}, 400
+        
+        result = user_service.update(data['document_id'], data)
+        
+    except Exception as e:
+        logging.exception('Error in update user')
+        result = jsonify({'Error': 'Falha ao atualizar usuário'}), 500
+    
+    finally:
+        mongo_conn.close_connection()
+
+    return result
