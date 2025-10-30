@@ -4,6 +4,7 @@
 #include "display_LCD-2004_I2C.h"
 #include "listNursingCall_utils.h"
 #include "buttons.h"
+#include "config.h"
 
 
 // flag que indica se o botão de deletar foi pressionado uma vez e está aguardando confirmação
@@ -63,10 +64,12 @@ void handleDelete() {  // ===== Botão Delete
 
 
 void setup() {
-  Serial.begin(115200);
+  // Serial.begin(115200);
+  logInit(LOG_MODE);
 
   if (!connectToWiFi()) {
-    Serial.println("WiFi não conectado.");
+    // Serial.println("WiFi não conectado.");
+    log(LOG_WARN, "Falha ao conectar com WiFI.");
   }
   setupMQTT();
 

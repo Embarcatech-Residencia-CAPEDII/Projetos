@@ -1,7 +1,7 @@
 #ifndef WIFI_HELPER_H
 #define WIFI_HELPER_H
 
-#include <WiFi.h>
+#include <ESP8266WiFi.h>
 #include "config.h"
 
 /**
