@@ -46,9 +46,12 @@ class UserService:
         user = self.user_db_model.return_user_by_username(username)
 
         if not user or not check_password_hash(user['password'], password):
-            return None
+            
+            resp = [jsonify({'Error': 'Credenciais inválidas'}), 404, None]
 
-        return user
+            return resp
+
+        return [jsonify({'Message': 'Usuário encontrado!'}), 200, user]
     
     '''
     Função de delete de usuários

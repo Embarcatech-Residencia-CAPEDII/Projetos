@@ -9,6 +9,7 @@ from Flask.auth import token_required, admin_required
 from MongoDB.MongoDBConnection import MongoDBConnection
 from dotenv import load_dotenv
 import os
+import logging
 
 '''
 Arquivo para rotas do client
@@ -41,34 +42,42 @@ retorna um token para acessar o sistema ou uma mensagem de credenciais inválida
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
 
+    alert_message=None
+
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
 
-        mongo_conn.start_connection()
-        user = user_service.login(username, password)
-        mongo_conn.close_connection()
+        try:
+            username = request.form.get('username')
+            password = request.form.get('password')
+
+            mongo_conn.start_connection()
+            resp = user_service.login(username, password)
+            mongo_conn.close_connection()
+
+            if resp[2] != None:
+
+                user = resp[2]
+
+                token = jwt.encode({
+                    'user'  :   user['username'],
+                    'role'  :   user['role'],
+                    'exp'   :   datetime.now(timezone.utc) + timedelta(minutes=10)
+                }, SECRET_KEY, algorithm='HS256')
+
+                resp = make_response(redirect(url_for('pages.relatorio_page')))
+                resp.set_cookie('jwt', token, httponly=True)
+
+                logging.info('Usuário logado!')
+
+                return resp
+
+            alert_message ='Credenciais inválidas'
         
-        print(datetime.now() + timedelta(hours=3))
-        
-        if user != None:
-            
-            token = jwt.encode({
-                'user'  :   user['username'],
-                'role'  :   user['role'],
-                'exp'   :   datetime.now(timezone.utc) + timedelta(minutes=10)
-            }, SECRET_KEY, algorithm='HS256')
+        except Exception as e:
+            logging.exception(e)
+            alert_message= 'Erro ao processar login'
 
-            print('TOKEN: ',token)
-
-            resp = make_response(redirect(url_for('pages.relatorio_page')))
-            resp.set_cookie('jwt', token, httponly=True)
-
-            return resp
-
-        return render_template('login.html', error='Credenciais Inválidas')
-
-    return render_template('login.html')
+    return render_template('login.html', alert_message=alert_message)
 
 '''
 Função para deslogar usuário
