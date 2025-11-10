@@ -138,6 +138,9 @@ void setup() {
 }
 
 void loop() {
+
+
+  handleBacklightLCD(false, wasButtonShortPress());
   
   if (wasButtonLongPressed() || !cfg.valid) {
     disableSoundAlert();

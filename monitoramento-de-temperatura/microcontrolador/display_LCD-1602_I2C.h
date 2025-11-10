@@ -13,4 +13,6 @@ extern void lcd1602_init();
      - alertHumi: indica se a umidade ultrapassou o limite (true = alerta)*/
 extern void lcd1602_showData(float temp, float humi, bool alertTemp, bool alertHumi);
 
+extern void handleBacklightLCD(bool isAlertState, bool commandTurnOnLCD);
+
 #endif // Final da diretiva de proteção contra múltiplas inclusões

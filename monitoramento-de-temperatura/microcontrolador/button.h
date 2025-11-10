@@ -105,4 +105,10 @@ bool wasButtonLongPressed();
  */
 void resetButtonState();
 
+
+void resetShortPress();
+
+bool wasButtonShortPress();
+
+
 #endif

@@ -2,6 +2,7 @@
 #include <LiquidCrystal_I2C.h>     // Biblioteca que controla o display LCD 1602 via módulo I2C
 #include <math.h>                  // Biblioteca de funções matemáticas. Usada para "fabs(...)" valor absoluto de float/double.
 #include "display_LCD-1602_I2C.h"  // Inclusão do arquivo de cabeçalho do módulo que contém as declarações de funções
+#include "log.h"
 
 
 const uint8_t I2C_ADDR = 0x27;  // Endereço padrão do módulo I2C do LCD
@@ -26,6 +27,8 @@ float lastHumidity = -1000.0;
 const float TEMP_UPDATE_THRESHOLD = 0.01;
 const float HUMI_UPDATE_THRESHOLD = 0.01;
 
+bool isBacklightTurnOn = true;
+unsigned long lastTimeBackligthTurnOn = 0;
 
 // Instancia do LCD
 LiquidCrystal_I2C lcd(I2C_ADDR, LCD_COLUMNS, LCD_LINES);
@@ -101,7 +104,8 @@ void lcd1602_showData(float temp, float humi, bool alertTemp, bool alertHumi) {
                TEMPERATURE_ALERT_MESSAGE,
                temp,
                alertTemp,
-               "\xDF""C");
+               "\xDF"
+               "C");
     lastTemperature = temp;  // atualiza último valor
   }
 
@@ -115,5 +119,40 @@ void lcd1602_showData(float temp, float humi, bool alertTemp, bool alertHumi) {
                alertHumi,
                "%");
     lastHumidity = humi;  // atualiza último valor
+  }
+}
+
+void turnOnBacklight() {
+  if (isBacklightTurnOn == false) {
+    lcd.backlight();
+    isBacklightTurnOn = true;
+  }
+}
+
+void turnOffBacklight() {
+  if (isBacklightTurnOn == true) {
+    lcd.noBacklight();
+    isBacklightTurnOn = false;
+  }
+}
+
+void handleBacklightLCD(bool isAlertState, bool commandTurnOnLCD) {
+
+  if (isAlertState) {
+    turnOnBacklight();
+  } else {
+
+    unsigned long now = millis();
+    if (commandTurnOnLCD) {
+      turnOnBacklight();
+      lastTimeBackligthTurnOn = now;
+
+    } else {
+      // log(LOG_INFO,"começou a contagem");
+      if (now - lastTimeBackligthTurnOn > 10 * 1000) {
+        turnOffBacklight();
+      }
+    }
+
   }
 }

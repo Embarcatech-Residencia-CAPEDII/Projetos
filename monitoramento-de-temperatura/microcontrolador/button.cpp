@@ -25,6 +25,8 @@ volatile unsigned long buttonPressStartTime = 0;
 /// Indica se ocorreu uma pressão longa no botão (pressionado > 15s)
 volatile bool flagLongPress = false;
 
+volatile bool flagShortPress = false;
+
 /// Indica se o botão está atualmente pressionado
 volatile bool isButtonPressed = false;
 
@@ -35,6 +37,9 @@ volatile bool isButtonPressed = false;
  * garantindo leitura correta mesmo em contextos concorrentes.
  */
 volatile bool flagMutePressed = false;
+
+
+bool isLCDturnOn = false;
 
 /**
  * @brief Estado lógico atual do botão de mute.
@@ -85,8 +90,12 @@ void IRAM_ATTR longPressButtonISR() {
 
   } else if (readButton == HIGH && isButtonPressed) {
     // Soltou o botão
-    if (millis() - buttonPressStartTime >= 15 * 1000) {
+    unsigned long now = millis();
+    if (now - buttonPressStartTime >= 15 * 1000) {
       flagLongPress = !flagLongPress;
+    } else if (now - buttonPressStartTime < 15 * 1000 && now - buttonPressStartTime >= 100) {
+      flagShortPress = true;
+      
     }
     isButtonPressed = false;
   }
@@ -189,6 +198,15 @@ bool wasButtonLongPressed() {
   return flagLongPress;
 }
 
+
+bool wasButtonShortPress(){
+  if (flagShortPress == true){
+    flagShortPress = false;
+    return true;
+  }
+  return false;
+}
+
 /**
  * @brief Reseta o estado lógico do botão de mute.
  *
@@ -197,3 +215,4 @@ bool wasButtonLongPressed() {
 void resetButtonState() {
   isMuted = false;
 }
+
