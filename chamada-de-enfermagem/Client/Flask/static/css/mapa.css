@@ -1,0 +1,25 @@
+.mapa-enfermaria {
+    width: 83vw;
+    margin: auto;
+    margin-top: 5vh;
+}
+
+.linha-mapa {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    /* border-bottom: 1px solid #ddd; */
+    align-items: center;
+}
+
+.celula-enfermaria{
+    background: #fff;
+    padding: 10px;
+    text-align: center;
+    border: 2px solid #ddd;
+    margin: 3px 3px;
+} 
+
+.celula-enfermaria p {
+    margin: 0;
+    font-weight: bold;
+}

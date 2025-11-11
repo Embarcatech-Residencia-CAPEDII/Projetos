@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erro 500 - Erro Interno</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.css' ) }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/error.css' ) }}">
+</head>
+<body>
+  <div class="error-container">
+    <img src="/static/img/error.png" alt="Erro" class="illustration">
+    <h1 class="error-code">404</h1>
+    <p class="error-message">Ops! A página que você procura não foi encontrada.</p>
+    <a href="/" class="btn btn-home text-white">Voltar à Página Inicial</a>
+  </div>
+</body>
+</html>

@@ -3,6 +3,7 @@
 #include "config.h"             // Arquivo de configuração com constantes (servidor, usuário, senha, tópicos, etc.).
 #include "jsonDataProcessing.h" // Header com a declaração da função que processa os dados JSON recebido do MQTT
 #include "log.h"
+#include "buzzer.h"
 
 // -----------------------------------------------------------------------------
 // Objetos globais
@@ -80,6 +81,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   // Processa os dados Json recebidos
   processing_json_MQTT(payload, length);
+  enableSoundAlert();
+  
 }
 
 /**

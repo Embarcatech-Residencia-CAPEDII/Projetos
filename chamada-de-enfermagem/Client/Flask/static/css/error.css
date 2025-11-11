@@ -1,0 +1,52 @@
+body {
+      background-color: #fff5f5;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .error-container {
+      text-align: center;
+      padding: 40px;
+    }
+
+    .error-code {
+      font-size: 8rem;
+      font-weight: 700;
+      color: #dc3545; /* vermelho Bootstrap */
+      text-shadow: 2px 2px 5px rgba(220, 53, 69, 0.4);
+    }
+
+    .error-message {
+      font-size: 1.5rem;
+      color: #6c757d;
+      margin-bottom: 20px;
+    }
+
+    .btn-home {
+      font-size: 1.1rem;
+      padding: 10px 25px;
+      border-radius: 50px;
+      background-color: #dc3545;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-home:hover {
+      background-color: #b02a37;
+    }
+
+    .illustration {
+      max-width: 300px;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    @media (max-width: 576px) {
+      .error-code {
+        font-size: 5rem;
+      }
+    }

@@ -9,16 +9,17 @@ function renderChamadas(dados, containerId) {
     div.className = "chamada-exibir borda-conteiner";
 
     div.appendChild(Object.assign(document.createElement("p"), {
-      textContent: `Enfermaria: ${item.Enfermaria}`
+      textContent: `Dispositivo: ${item.dispositivo_id}`
     }));
 
     div.appendChild(Object.assign(document.createElement("p"), {
-      textContent: `Data: ${item.Data}`
+      textContent: `Local: ${item.local}`
     }));
 
-    // div.appendChild(Object.assign(document.createElement("p"), {
-    //   textContent: `Hora: ${item.hora}`
-    // }));
+    data = new Date(item.data)
+    div.appendChild(Object.assign(document.createElement("p"), {
+      textContent: `Data: ${data.toLocaleString("pt-BR")}`
+    }));
 
     container.appendChild(div);
   });

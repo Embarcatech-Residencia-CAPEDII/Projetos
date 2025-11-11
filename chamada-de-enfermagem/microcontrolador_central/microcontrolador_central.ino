@@ -5,7 +5,8 @@
 #include "listNursingCall_utils.h"
 #include "buttons.h"
 #include "config.h"
-
+#include "buzzer.h"
+#include "led.h"
 
 // flag que indica se o botão de deletar foi pressionado uma vez e está aguardando confirmação
 bool deletionConfirmation = false;
@@ -72,9 +73,9 @@ void handleDelete() {  // ===== Botão Delete
 
 
     if (listCalls.removeCurrent()) {  // Apaga o item selecionado
-      Serial.println("Chamada removida com sucesso!");
+      log(LOG_INFO,"Chamada removida com sucesso!");
     } else {
-      Serial.println("Erro ao remover a chamada na lista!");
+      log(LOG_ERROR,"Erro ao remover a chamada na lista!");
     }
     fixed_data();               // Atualiza o display com os dados fixos
     showInfirmaryNumber(
@@ -104,6 +105,11 @@ void setup() {
   lcd2004_init();
   // Inicializa botões
   initButtons();
+
+  ledInit();
+
+  // inicializa buzzer
+  buzzerInit();
 
   showInfirmaryNumber(
     listCalls.getInfirmaryCurrent(),
@@ -136,13 +142,23 @@ void loop() {
       listCalls.getInfirmaryCurrent(),
       listCalls.hasNursingCall(),
       listCalls.getTotal());
+
     listUpdated = false;  // reseta a flag
   }
 
   // Habilita os botões somente se houver dados na lista
+  // aciona led se houver algum chamado
   if (listCalls.hasNursingCall()) {
     if (checkButton(button_next)) handleNext();
     if (checkButton(button_prev)) handlePrev();
     if (checkButton(button_delete)) handleDelete();
+
+    toggleLed();
+  } else {
+    turnOffLed();
+  }
+
+  if (doesHaveNotificationBuzzer()) {
+    toggleBuzzer();
   }
 }

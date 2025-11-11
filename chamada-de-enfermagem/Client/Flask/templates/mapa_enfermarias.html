@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mapa.css') }}">
+
+  <title>Chamada de enfermagem</title>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar bg-danger">
+      <div class="container-fluid">
+        <a class="navbar-brand">
+          <img src="static/img/logo2.png" alt="Logo" width="150">
+        </a>
+        <div class="px-3">
+          <h1 class="text-white m-0">Chamada de enfermagem</h1>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <nav class="col-md-1 col-lg-1 d-md-block bg-light sidebar vh-100 ">
+        <div class="d-flex flex-column align-items-center">
+          <ul class="nav nav-pills flex-column mb-auto text-center w-100">
+            <li>
+              <a href="/relatorio" class="nav-link py-2 px-2">
+                <img src="static/img/icons/home.png" alt="" class="icon-side">
+              </a>
+            </li>
+            <li>
+              <a href="/usuarios" class="nav-link py-2 px-2">
+                <img src="static/img/icons/usuarios-alt.png" alt="" class="icon-side">
+              </a>
+            </li>
+            <li>
+              <a href="/dispositivos" class="nav-link py-2 px-2">
+                <img src="static/img/icons/computador.png" alt="" class="icon-side">
+              </a>
+            </li>
+
+            <li>
+              <a href="/mapa" class="nav-link py-2 px-2">
+                <img src="static/img/icons/mapa.png" alt="" class="icon-side">
+              </a>
+            </li>
+            
+          </ul>
+          <div class="dropdown mt-auto">
+            <a href="#" class="d-flex align-items-center justify-content-center p-3 link-dark text-decoration-none dropdown-toggle"
+              id="dropdownUser3" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="static/img/icons/usuario.png" alt="" class="icon-side">
+            </a>
+            <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser3">
+              <li><a class="dropdown-item" href="/auth/logout">Sair</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Conteudo -->
+       <main class="col">
+        <!-- <h1>Mapa enfermarias</h1> -->
+         <div class="mapa-enfermaria">
+          <div class="linha-mapa" id="mapa">
+            <div class="celula-enfermaria">
+                <p>dispositivo: enfermaria</p>
+                <p>sala: 1</p>
+                <p>estado: ocioso</p>
+                <p>Ultima atualizacao: 01/93/34</p>
+            </div>
+            <div class="celula-enfermaria">
+                <p>dispositivo: enfermaria</p>
+                <p>sala: 1</p>
+                <p>estado: ocioso</p>
+                <p>Ultima atualizacao: 01/93/34</p>
+            </div>
+            <div class="celula-enfermaria">
+                <p>dispositivo: enfermaria</p>
+                <p>sala: 1</p>
+                <p>estado: ocioso</p>
+                <p>Ultima atualizacao: 01/93/34</p>
+            </div>
+            <div class="celula-enfermaria">
+                <p>dispositivo: enfermaria</p>
+                <p>sala: 1</p>
+                <p>estado: ocioso</p>
+                <p>Ultima atualizacao: 01/93/34</p>
+            </div>
+            <div class="celula-enfermaria">
+                <p>dispositivo: enfermaria</p>
+                <p>sala: 1</p>
+                <p>estado: ocioso</p>
+                <p>Ultima atualizacao: 01/93/34</p>
+            </div>
+            <div class="celula-enfermaria">
+                <p>dispositivo: enfermaria</p>
+                <p>sala: 1</p>
+                <p>estado: ocioso</p>
+                <p>Ultima atualizacao: 01/93/34</p>
+            </div>
+            <div class="celula-enfermaria">
+                <p>dispositivo: enfermaria</p>
+                <p>sala: 1</p>
+                <p>estado: ocioso</p>
+                <p>Ultima atualizacao: 01/93/34</p>
+            </div>
+            <div class="celula-enfermaria">
+                <p>dispositivo: enfermaria</p>
+                <p>sala: 1</p>
+                <p>estado: ocioso</p>
+                <p>Ultima atualizacao: 01/93/34</p>
+            </div>
+            <div class="celula-enfermaria">
+                <p>dispositivo: enfermaria</p>
+                <p>sala: 1</p>
+                <p>estado: ocioso</p>
+                <p>Ultima atualizacao: 01/93/34</p>
+            </div><div class="celula-enfermaria">
+                <p>dispositivo: enfermaria</p>
+                <p>sala: 1</p>
+                <p>estado: ocioso</p>
+                <p>Ultima atualizacao: 01/93/34</p>
+            </div>
+
+            <div class="celula-enfermaria">
+                <p>dispositivo: enfermaria</p>
+                <p>sala: 1</p>
+                <p>estado: ocioso</p>
+                <p>Ultima atualizacao: 01/93/34</p>
+            </div>
+            <div class="celula-enfermaria">
+                <p>dispositivo: enfermaria</p>
+                <p>sala: 1</p>
+                <p>estado: ocioso</p>
+                <p>Ultima atualizacao: 01/93/34</p>
+            </div>
+          </div>
+         </div>
+       </main>
+
+
+
+  <!-- Scripts -->
+  <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.js') }}"></script>
+  <script src="{{ url_for('static', filename='chart.js/Chart.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/mapa.js') }}"></script>
+</body>
+
+</html>

@@ -66,6 +66,10 @@ formPut.addEventListener('submit', async (e) => {
     delete dados.username;
   }
 
+  if (dados.password === "") {
+    delete dados.password;
+  }
+
   try {
       // Modo edição
       const resposta = await fetch(`/api/users/update`, {
