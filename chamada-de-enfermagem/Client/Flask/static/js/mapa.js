@@ -23,7 +23,8 @@ function renderMapa(dados, containerId) {
         textContent: `Estado: ${dado.status}`
       }));
 
-      data = new Date(dado.updateAt)
+      dataRAW =  dado.updateAt.replace("ISODate('", "").replace("')", "");
+      data = new Date(dataRAW);
 
       div.appendChild(Object.assign(document.createElement("p"), {
         textContent: `Última atualização: ${data.toLocaleString("pt-BR")}`

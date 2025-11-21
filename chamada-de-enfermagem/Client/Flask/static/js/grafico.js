@@ -30,11 +30,24 @@ grafico = new Chart("grafico-chamadas", {
   }
 }); 
 
-async function atualizarGrafico(tipo = "hora") {
+async function atualizarGrafico(tipo = "mes") {
   try {
-    fetch(`/api/chamadas/dia/contagem`).then(res => res.json()).then(dados => {
-      grafico.data.datasets[0].data = dados;
-      grafico.data.labels = labels[tipo];
+    fetch(`/api/chamadas/dia/mes`).then(res => res.json()).then(dados => {
+
+      dias = []
+      quant = []
+
+      console.log("Tipo:", typeof dados, "Conteúdo:", dados);
+
+
+      dados.forEach(item => {
+        const [dia, valor] = Object.entries(item)[0]; 
+        dias.push(Number(dia));
+        quant.push(Number(valor));
+      });
+
+      grafico.data.datasets[0].data = quant;
+      grafico.data.labels = dias;
       grafico.options.scales.yAxes = axesY[tipo];
       grafico.update();
     });
