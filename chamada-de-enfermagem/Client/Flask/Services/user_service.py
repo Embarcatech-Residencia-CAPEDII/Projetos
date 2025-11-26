@@ -2,6 +2,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from Flask.Models.user_db_model import UserDBModel
 from datetime import datetime
 from flask import jsonify
+from bson.objectid import ObjectId
 '''
 Classe de utilitário de autenticação
 '''
@@ -57,6 +58,9 @@ class UserService:
     Função de delete de usuários
     '''
     def delete(self, document_id:str):
+        
+        if ObjectId.is_valid(document_id) is False: 
+            return jsonify({'message':'ID de usuário incorreto'}), 404
 
         if self.user_db_model.check_if_user_exists_by_id(document_id) is False:
             return jsonify({'message': 'usuário não existe'}), 404
@@ -73,6 +77,9 @@ class UserService:
     def update(self, document_id, document_with_updates:dict):
 
         document_with_updates.pop('document_id')
+
+        if ObjectId.is_valid(document_id) is False: 
+            return jsonify({'message':'ID de usuário incorreto'}), 404
 
         for key, value in document_with_updates.items():
 

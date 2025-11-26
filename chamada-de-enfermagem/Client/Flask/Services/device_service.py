@@ -1,6 +1,7 @@
 from Flask.Models.device_db_model import DeviceDBModel
 from datetime import datetime
 from flask import jsonify
+from bson.objectid import ObjectId
 
 '''
 Classe de utilitário de registro de devices
@@ -32,6 +33,9 @@ class DeviceService:
     
     def delete(self, document_id:str):
 
+        if ObjectId.is_valid(document_id) is False: 
+            return jsonify({'message':'ID de dispositivo incorreto'}), 404
+
         if self.device_db_model.find_device_by_id(document_id) is False:
             return jsonify({'message': 'Dispositivo não encontrado'}), 404
 
@@ -42,6 +46,9 @@ class DeviceService:
 
     def update(self, document_id:str, document_with_updates:dict):
         document_with_updates.pop('document_id')
+
+        if ObjectId.is_valid(document_id) is False: 
+            return jsonify({'message':'ID de dispositivo incorreto'}), 404
 
         for key, name_device in document_with_updates.items():
 
