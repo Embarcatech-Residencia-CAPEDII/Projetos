@@ -63,11 +63,9 @@ class MqttClientConnection:
         self.start_connection()
         while True: sleep(0.001)
 
+    '''
     def publish_on_topic(self,topic, msg):
-        '''
-        Função para publicar em algum tópico 
-        '''
-
+    
         payload = {
             'id': self.client_name,
             'estado': 'oscioso',
@@ -78,3 +76,8 @@ class MqttClientConnection:
         }
 
         self.mqtt_client.publish(topic, json.dumps(payload))
+
+    '''
+    '''
+        Função de pub em tópicos
+    '''
