@@ -18,6 +18,9 @@ class MongoDBConnection:
         self.client = None
         self.db = None
 
+    def __enter__(self):
+        self.start_connection()
+
     def start_connection(self):
         '''
         Função de iniciar a conexão com o banco de dados
@@ -367,4 +370,3 @@ class MongoDBConnection:
         if self.client:
             self.client.close()
             logging.info("Conexão fechada.")
-            
