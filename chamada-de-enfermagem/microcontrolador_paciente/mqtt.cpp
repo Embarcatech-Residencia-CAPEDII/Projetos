@@ -4,7 +4,6 @@
 #include "mqtt.h"
 #include "led.h"
 
-
 // Variáveis de controle
 static unsigned long lastAttempConnectMQTT = 0;           // Guarda o tempo da última tentativa de conexão com o broker.
 static const unsigned long reconnectIntervalMQTT = 3000;  // Intervalo (ms) entre tentativas de reconexão ao broker.
@@ -14,11 +13,14 @@ extern bool confirmMsg; // Indica se o dispositivo recebeu confirmação via cal
 //MQTT Broker 
 const char* MQTT_BROKER = "XXXXXX";
 const int MQTT_PORT = 0;
-// const char* MQTT_USER = "";
-// const char* MQTT_PASS = "";
+const char* MQTT_USER = "";
+const char* MQTT_PASS = "";
 const char* ID_CLIENT = "{id-dispositivo}";
+
 const char* TOPIC_PUBLISH = "dispositivos/posto_enfermaria";
 const char* TOPIC_SUBSCRIBE = "dispositivos/enfermaria/{id-dispositivo}";
+
+const char* PUBLISH_MSG_CONFIRM = "dispositivo/confirmacao/posto_enfermaria";
 const char* TOPIC_SUBSCRIBE_CONFIRM = "dispositivo/confirmacao/{id-dispositivo}";
 
 
@@ -44,7 +46,7 @@ void connectMQTT() {
 
     Serial.println("Tentando conectar ao MQTT");
     // Tenta conectar ao broker
-    if (client.connect(ID_CLIENT)) {
+    if (client.connect(ID_CLIENT, MQTT_USER, MQTT_PASS)) {
       Serial.println("Exito na conexão");
       client.subscribe(TOPIC_SUBSCRIBE);
       client.subscribe(TOPIC_SUBSCRIBE_CONFIRM);  // Inscreve-se no tópico para receber mensagens
@@ -80,7 +82,6 @@ const char* createJsonConfirmPayload() {
   StaticJsonDocument<64> doc;
   doc["id"] = ID_CLIENT;
   doc["status"] = "ok";
-  doc["confirmo, desligado!"];
 
   static char payload[64];
   serializeJson(doc, payload);
@@ -108,7 +109,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
       if (String(comando) == "desligar") {
         desligarLed();
-        if(client.publish(TOPIC_PUBLISH, createJsonConfirmPayload())){
+        if(client.publish(PUBLISH_MSG_CONFIRM, createJsonConfirmPayload(), false)){
           Serial.println("Enviado confirmacao de finalizado!");
         }
         buttonBlocked = false;

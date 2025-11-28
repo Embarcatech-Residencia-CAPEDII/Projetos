@@ -39,33 +39,36 @@ void loop() {
       retryCount = 0;
       confirmMsg = false;
 
-      if (client.publish(TOPIC_PUBLISH, createJsonPayload())) {
+
+      if (client.publish(TOPIC_PUBLISH, createJsonPayload(), false)) {
         Serial.println("Solicitação enviada");
+
         buttonBlocked = true;
         timeLastRequest = millis();
 
 
       } else {
         Serial.println("Falha ao enviar solicitação");
+        buttonBlocked = false;
       }
     }
-  }
 
-  // Controle de timeout e tentativas de reenviar
-  if (!confirm && millis() - timeLastRequest > TIMEOUT_ACK) {
+    // Controle de timeout e tentativas de reenviar
+    if (!confirmMsg && millis() - timeLastRequest > TIMEOUT_ACK && buttonBlocked) {
 
-    if (retryCount < MAX_RETRY) {
-      retryCount++;
-      Serial.printf("Tentando novamente... (%d/%d)\n", retryCount, MAX_RETRY);
+      if (retryCount < MAX_RETRY) {
+        retryCount++;
+        Serial.printf("Tentando novamente... (%d/%d)\n", retryCount, MAX_RETRY);
 
-      client.publish(TOPIC_PUBLISH, createJsonPayload());
+        client.publish(TOPIC_PUBLISH, createJsonPayload(), false);
 
-      timeLastRequest = millis();
+        timeLastRequest = millis();
 
-    } else {
-      buttonBlocked = false;
-      confirm = true;
-      retryCount = 0;
+      } else {
+        buttonBlocked = false;
+        confirmMsg = true;
+        retryCount = 0;
+      }
     }
   }
 }
