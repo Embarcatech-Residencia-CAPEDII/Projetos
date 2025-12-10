@@ -11,6 +11,9 @@ def check_if_device_exists(device:str) -> bool:
     '''
     Verifica se existe um device na database
     '''
+
+    logging.info(f'Verificação de dispositivo: {device}')
+
     try:
 
         result = mongo_conn.check_if_document_exists('devices', 'device', device)
@@ -30,6 +33,8 @@ def register_chamada_mongodb(payload:dict):
     '''
     Registra uma nova chamada na database, realiza o tratamento do payload
     '''
+
+    logging.info(f'Registro de payload de chamada')
 
     dispositivo_id = payload.get('id')
     mensagem = payload.get('mensagem')
@@ -61,6 +66,8 @@ def register_status_device_mongodb(device:str, payload:dict):
 
     if 'room_number' in payload:
         return
+    
+    logging.info(f'Verificação de confirmação de recebimento da mensagem do dispositivo: {device}')
      
     document_to_save = {
         'device': device,
@@ -97,6 +104,8 @@ def register_status_chamada_mongo_db(device:str, payload:dict):
     
     if not ('room_number' in payload) and ('estado' not in payload):
         return 
+
+    logging.info(f'Payload de registro de status do dispositivo: {device}')
 
     room_number = payload.get('room_number')
     estado = payload.get('estado')
