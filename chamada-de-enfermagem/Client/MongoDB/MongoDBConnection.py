@@ -8,6 +8,11 @@ import logging
 import calendar
 
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='Data: %(levelname)s - %(asctime)s - %(filename)s - %(message)s'
+)
+
 class MongoDBConnection:
     '''
     Classe para conexão com banco de dados MongoDB
