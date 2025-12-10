@@ -21,7 +21,7 @@ app.register_blueprint(error_bp)
 
 logging.basicConfig(
     level=logging.INFO,
-    format='Data: %(asctime)s - %(message)s '
+    format='Data: %(levelname)s - %(asctime)s - %(filename)s - %(message)s'
 )
 
 if __name__ == "__main__":
