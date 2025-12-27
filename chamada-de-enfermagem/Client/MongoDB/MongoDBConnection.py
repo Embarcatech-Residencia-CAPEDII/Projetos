@@ -32,17 +32,22 @@ class MongoDBConnection:
         '''
         
         if self.uri != None and self.database_name != None:
-            try:
-                self.client = MongoClient(self.uri, server_api=ServerApi('1'))
-                self.db = self.client[self.database_name]
-                self.client.admin.command('ping')
-                logging.info("Pinged your deployment. You successfully connected to MongoDB!")
+
+            if self.client is not None:
                 return True
-            except ConnectionFailure as e:
-                self.client = None
-                self.db = None
-                logging.exception(e)
-                return False
+            
+            else:
+                try:
+                    self.client = MongoClient(self.uri, server_api=ServerApi('1'))
+                    self.db = self.client[self.database_name]
+                    self.client.admin.command('ping')
+                    logging.info("Pinged your deployment. You successfully connected to MongoDB!")
+                    return True
+                except ConnectionFailure as e:
+                    self.client = None
+                    self.db = None
+                    logging.exception(e)
+                    return False
         else:
             logging.warning('Database não definida')
             return False
