@@ -2,6 +2,7 @@ from Flask.Models.device_db_model import DeviceDBModel
 from datetime import datetime
 from flask import jsonify
 from bson.objectid import ObjectId
+from Scripts.device_scripts import run_command_to_add_device_mosquitto 
 
 '''
 Classe de utilitário de registro de devices
@@ -29,6 +30,7 @@ class DeviceService:
 
             return jsonify({'message': 'Device não inserido no banco de dados'}), 500
 
+        run_command_to_add_device_mosquitto(device)
         return jsonify({'message': 'Device cadastrado com sucesso'}), 201
     
     def delete(self, document_id:str):
