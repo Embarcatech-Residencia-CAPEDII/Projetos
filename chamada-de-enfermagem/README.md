@@ -23,40 +23,78 @@ sudo nano /etc/mosquitto/mosquitto.conf     #Arch Linux
 
 Adicione/edite as seguintes linhas do arquivo
 ```bash
-allow_anonymous false   #desativa entrada de subscribers sem autenticação
+#################################
+# CONFIGURAÇÕES BÁSICAS
+#################################
+
+listener 1883
+allow_anonymous false
+
+#################################
+# AUTENTICAÇÃO
+#################################
+
+password_file /etc/mosquitto/passwd
+
+#################################
+# PERSISTÊNCIA
+#################################
+
+persistence true
+persistence_location /var/lib/mosquitto/
+
+#################################
+# LIMITES
+#################################
+
+max_inflight_messages 20
+max_queued_messages 100
+max_packet_size 1048576
+
+#################################
+# LOGS
+#################################
+
+log_dest file /var/log/mosquitto/mosquitto.log
+log_type error
+log_type warning
+log_type notice
+log_type information
 ```
 
+### **4. Usuários e Senhas**
+Crie os usuários/dispositivos para conexão com o broker
 ```bash
-persistence true   #Diretórui de persistência
-persistence_location /var/lib/mosquitto/    #caminho do diretório
+sudo mosquitto_passwd -c /etc/mosquitto/passwd <usuario/dispositivo>
+```
+Adicionar mais usuários/dispositivos
+```bash
+sudo mosquitto_passwd /etc/mosquitto/passwd <usuario/dispositivo>
 ```
 
+### **5.Permissões de escrita de arquivos**
+Para permitir que o mosquitto possa registrar novos dispositivos
 ```bash
-log_dest file /var/log/mosquitto/mosquitto/log #Diretoŕio para logs
+sudo chown root:mosquitto /etc/mosquitto/passwd
+sudo chmod 640 /etc/mosquitto/passwd
+ls -l
+```
+Saída esperada:
+```bash
+ -rw-r----- 1 root mosquitto /etc/mosquitto/passwd 
 ```
 
-### **4. Criar diretórios de log e permissões**
+Arquivo de Log
 ```bash
-sudo mkdir -p /var/log/mosquitto /var/lib/mosquitto
-sudo touch /var/log/mosquitto/mosquitto.log
-sudo chown -R mosquitto:mosquitto /var/log/mosquitto /var/lib/mosquitto
-sudo chown mosquitto:mosquitto /etc/mosquitto/passwd
-sudo chmod 600 /etc/mosquitto/passwd
-```
-### **5.Autenticação de usuários/dispositivos e senhas**
-Para criar o arquivo de usuário e senhas, e digite e confirme a senha para o usuário
-```bash
-sudo mosquitto_passwd -c /etc/mosquitto/passwd <nome_do_usuário>    #Arch Linux
-```
-
-Para adicionar novos usuários/dispositivos
-```bash
-sudo mosquitto_passwd /etc/mosquitto/passwd <nome_do_usuário>   #Arch Linux 
+sudo chown mosquitto:mosquitto /var/log/mosquitto/mosquitto.log
+sudo chmod 700 /var/log/mosquitto/mosquitto.log
 ```
 
 ### **6. Reinicie o Broker**
 ```bash
-sudo systemctl restart mosquitto    #Arch Linux
+sudo systemctl reset-failed mosquitto
+sudo systemctl restart mosquitto
+sudo systemctl status mosquitto
 ```
 
 ## **Instalação e Configuração do Client**
@@ -100,32 +138,125 @@ db.createUser({user:'<nome_user>',pwd:'<senha>', roles:[{role:'readWrite',db:'<n
 ```
 ### **4. No arquivo .env coloque as credenciais para conexão com seu Banco de dados e do broker**
 ```
-MONGO_URI ='mongodb://<nome-user>:<senha>@localhost:27017/<nome-database>?authSource=admin'
+#String de conexão com o banco de dados
+MONGO_URI ='mongodb://<nome-user>:<senha>@localhost:27017/<nome-database>?authSource=admin' 
 
+#Nome do banco de dados
 MONGO_DATABASE = 'nome-database'
 
+#Dados de conexão com o broker
 BROKER_IP = ''
 BROKER_PORT = ''
 BROKER_TOPIC = ''
 
+#Senha para novos dispositivos e caminho do arquivo de senhas
+PASSWORD_DEVICES = ''
+PATH_FILE_PASSWORD_MOSQUITTO = ''
+
+#Dados para conexão do client-mqtt
 CLIENT_NAME = ''
 CLIENT_USERNAME = ''
 CLIENT_PASS = ''
 
+#Dados para uso interno do mqtt-client
 PUB_USERNAME = ''
 PUB_PASS = ''
 
+#Secret-Key
 SK = ''
+```
+## **Instalação e Configuração do Client**
 
+
+### **1. Rodar as aplicações nativamente no servidor**
+Utilize o terminal para chegar na pasta system
+```bash
+cd /etc/systemd/system
+```
+Crie um arquivo de serviço do Mqtt-Client
+```bash
+sudo nano mqtt-client.service
+```
+Copie e cole as seguintas linhas
+```bash
+[Unit]
+
+Description=MQTT Client Service
+After=network.target
+
+[Service]
+User=<usuario>
+Group=<grupo do usuário>
+Type=simple
+Environment="PYTHONPATH=/caminho/do/projeto/Projetos-EmbarcaTech/chamada-de-enfermagem/Client"
+WorkingDirectory=/caminho/do/projeto/Projetos-EmbarcaTech/chamada-de-enfermagem/Client/Mqtt
+ExecStart=/caminho/do/projeto/Projetos-EmbarcaTech/chamada-de-enfermagem/.venv/bin/python -m Mqtt.main
+
+#Arquivos de logs
+StandardOutput=file:/caminho/do/arquivo/de/logs/Chamada-Enfermagem/mqtt-log.err.log
+StandardError=file:/caminho/do/arquivo/de/logs/Chamada-Enfermagem/mqtt-log.err.log
+
+
+Restart=always
+RestartSec=5
+Environment="PYTHONUNBUFFERED=1"
+
+[Install]
+WantedBy=multi-user.target
 ```
 
-### **5. Conectar o Client MQTT ao Broker**
+Faça o mesmo para o Flask-Backend.Service
+Crie um arquivo de serviço do Flask-Backend
 ```bash
-cd ./chamada-de-enfermagem/Client
+sudo nano flask-backend.service
+```
+Copie e cole as seguintas linhas
+```bash
+[Unit]
+
+Description=Gunicorn service for Flask Backend
+After=network.target
+
+[Service]
+User=<usuário>
+Group=<grupo do usuário>
+
+Environment="PYTHONPATH=/caminho/do/projeto/Projetos-EmbarcaTech/chamada-de-enfermagem/Client"
+WorkingDirectory=/caminho/do/projeto//Projetos-EmbarcaTech/chamada-de-enfermagem/Client/Flask
+ExecStart=/caminho/do/projeto//Projetos-EmbarcaTech/chamada-de-enfermagem/.venv/bin/gunicorn -w 4 -k gevent  -b 0.0.0.0:5000 app:app
+
+#Arquivos de logs
+StandardOutput=file:/caminho/do/projeto/logs/Chamada-Enfermagem/gunicorn.log
+StandardError=file:/caminho/do/projeto/logs/Chamada-Enfermagem/gunicorn.err.log
+
+
+Restart=always
+Environment="PYTHONUNBUFFERED=1"
+[Install]
+WantedBy=multi-user.target
+```
+
+Após criar os arquivos de configurações habilite os serviços
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable flask-backend.service
+sudo systemctl enable mqtt-client.service
+```
+
+Inicie os serviços  
+```bash
+sudo systemctl start flask-backend
+sudo systemctl start mqtt-client
+```
+
+Veja o status dos serviços  
+```bash
+sudo systemctl status flask-backend
 ```
 ```bash
-python -m Mqtt.main        #Windows/Linux
+sudo systemctl status mqtt-client
 ```
+
 ### **6. Abrir o Client Flask em ambiente de desenvolvimento para visualizar o software**
 ```bash
 cd ./chamada-de-enfermagem/Client
