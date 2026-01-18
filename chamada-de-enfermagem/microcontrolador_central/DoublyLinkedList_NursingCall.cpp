@@ -129,48 +129,61 @@ void List_NursingCall::prev() {  // Move current para o nó anterior
 // =========================
 //        Remoção
 // =========================
-bool List_NursingCall::removeCurrent() {
 
-  if (!hasNursingCall()){
+bool List_NursingCall::remove(NursingCall* node) {
+
+  if (!hasNursingCall()) {
     return false;
   }
-  // Se current é NULL, não remove.
-  if (current == nullptr) return false;
 
-  // variável auxiliar para segurar o nó que será removido
-  NursingCall* temp = current;
-
+  if (node == nullptr) return false;
   /* ==============================
         Ajustar o ponteiro anterior
      ==============================*/
   // Se existe um nó anterior, faz esse nó apontar (next) para o próximo de temp
-  if (temp->prev != nullptr) {
-    temp->prev->next = temp->next;
-  } else {  // Caso contrário - temp é o primeiro da lista
+  if (node->prev != nullptr) {
+    node->prev->next = node->next;
+  } else {  // Caso contrário - node é o primeiro da lista
     // Atualiza head para ser o próximo nó
-    head = temp->next;
+    head = node->next;
   }
 
   /* ==============================
         Ajustar o ponteiro seguinte
        ==============================*/
-  if (temp->next != nullptr) {
-    // Se existe um nó seguinte - faz esse nó apontar (prev) para o anterior de temp
-    temp->next->prev = temp->prev;
+  if (node->next != nullptr) {
+    // Se existe um nó seguinte - faz esse nó apontar (prev) para o anterior de node
+    node->next->prev = node->prev;
     // Atualiza current para esse próximo nó
-    current = temp->next;
-  } else {  // Caso contrário - temp é último da lista
-    // Atualiza tail para o anterior de temp
-    tail = temp->prev;
+
+    if (current == node) {
+      current = node->next;
+    }
+  } else {  // Caso contrário - node é último da lista
+    // Atualiza tail para o anterior de node
+    tail = node->prev;
     // Atualiza current para esse anterior
-    current = temp->prev;
+
+    if (current == node) {
+      current = node->prev;
+    }
   }
 
   // Remove da memória o nó que foi desconectado, evitando vazamento de memória
-  delete temp;
+  delete node;
   // Decrementa o número de nós da lista
   total--;
   return true;
+}
+
+
+bool List_NursingCall::removeCurrent() {
+
+  // variável auxiliar para segurar o nó que será removido
+  NursingCall* temp = current;
+
+  return remove(temp);
+
 }
 
 
@@ -200,6 +213,22 @@ bool List_NursingCall::removeOldestCall() {
   delete toRemove;  // Libera memória do elemento removido
   total--;          // Decrementa contador de elementos
   return true;      // Retorna sucesso - elemento removido com sucesso
+}
+
+
+bool List_NursingCall::removalById(const char* id) {
+
+  NursingCall* node = head;
+
+  while (node != nullptr) {
+    if (strcmp(node->id, id)==0) {
+      //remove no da liista
+      remove(node);
+      return true;
+    }
+    node = node->next;
+  }
+  return false;
 }
 
 

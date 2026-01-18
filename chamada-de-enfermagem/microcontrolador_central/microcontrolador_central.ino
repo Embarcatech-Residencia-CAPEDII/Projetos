@@ -161,22 +161,17 @@ void loop() {
 
     stopServer(&server);
 
-    if (hasOKMessage) {
-      // log(LOG_INFO,listCalls.getIdCurrent());
-      const char* idDevice = listCalls.getIdCurrent();
-
-      if (listCalls.removeCurrent()) {  // Apaga o item selecionado
-        log(LOG_INFO, "Chamada removida com sucesso!");
-        publicReponseDivice(idDevice, MQTT_PUB_CONFIRMATION_TOPIC, "", true);
-      } else {
-        log(LOG_ERROR, "Erro ao remover a chamada na lista!");
-      }
-
-
-      showInfirmaryNumber(
-        listCalls.getInfirmaryCurrent(),
-        listCalls.hasNursingCall(),
-        listCalls.getTotal());  // Mostra os dados no display
+  if (hasOKMessage) {
+    // log(LOG_INFO,listCalls.getIdCurrent());
+    if (listCalls.removalById(calledToBeErased)) {  // Apaga o item selecionado
+      log(LOG_INFO, "Chamada removida com sucesso!");
+    } else {
+      log(LOG_ERROR, "Erro ao remover a chamada na lista!");
+    }
+    showInfirmaryNumber(
+      listCalls.getInfirmaryCurrent(),
+      listCalls.hasNursingCall(),
+      listCalls.getTotal());  // Mostra os dados no display
 
       // Ao marcar o chamado como resolvido, reseta a flag, indicando se atingir o limite pode remover o current
       deletionConfirmation = false;

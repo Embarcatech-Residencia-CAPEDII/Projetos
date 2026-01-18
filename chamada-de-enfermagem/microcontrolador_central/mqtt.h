@@ -7,6 +7,8 @@
 // Declarações globais
 // -----------------------------------------------------------------------------
 
+extern const char* calledToBeErased;
+
 extern bool hasOKMessage;
 
 /**

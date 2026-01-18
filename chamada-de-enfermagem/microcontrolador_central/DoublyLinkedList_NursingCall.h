@@ -28,6 +28,9 @@ class List_NursingCall {
     // Função que remove se atingir o limite (lista cheia)
     bool removeOldestCall();
 
+    // remove no pelo ponteiro
+    bool remove(NursingCall* node);
+
     // área pública que permite manipular e consultar a lista
   public:
     List_NursingCall();
@@ -51,6 +54,7 @@ class List_NursingCall {
     // Modificações
     bool add(const char* infirmary, const char* id);
     bool removeCurrent();
+    bool removalById(const char* id);
     void clear();
 };
 
