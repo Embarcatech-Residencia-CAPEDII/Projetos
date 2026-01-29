@@ -34,17 +34,8 @@ async function atualizarGrafico(tipo = "mes") {
   try {
     fetch(`/api/chamadas/dia/mes`).then(res => res.json()).then(dados => {
 
-      dias = []
-      quant = []
-
-      console.log("Tipo:", typeof dados, "Conteúdo:", dados);
-
-
-      dados.forEach(item => {
-        const [dia, valor] = Object.entries(item)[0]; 
-        dias.push(Number(dia));
-        quant.push(Number(valor));
-      });
+      dias = dados.map(item => item.day)
+      quant = dados.map(item => item.count)
 
       grafico.data.datasets[0].data = quant;
       grafico.data.labels = dias;

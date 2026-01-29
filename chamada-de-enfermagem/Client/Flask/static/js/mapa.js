@@ -1,4 +1,4 @@
-const vermelho = "#a1423a"
+const vermelho = "#c91f1079"
 const verde = "#87c454"
 const azul = "#4384c4"
 
@@ -10,6 +10,10 @@ function renderMapa(dados, containerId) {
       div = document.createElement("div")
       div.className = 'celula-enfermaria'
       div.id = dado._id;
+
+      if (dado.status == "emergencia") {
+        div.style.backgroundColor = vermelho;
+      }
 
       div.appendChild(Object.assign(document.createElement("p"), {
         textContent: `Dispositivo: ${dado.device}`
@@ -35,7 +39,7 @@ function renderMapa(dados, containerId) {
     });
 }
 
-async function fetchMapa(containerId) {
+async function fetchMapa(containerId = "mapa") {
     try {
         const response = await fetch("/api/mapa/status"); 
         if (!response.ok) {
@@ -52,3 +56,5 @@ async function fetchMapa(containerId) {
 }
 
 fetchMapa("mapa");
+
+setInterval(fetchMapa, 10000)
